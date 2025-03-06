@@ -119,8 +119,16 @@ const runBackend = async () => {
 
 const setupDatabase = async (pool) => {
   await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
+  await pool.query(`DROP TABLE IF EXISTS clients CASCADE`);
+  await pool.query(`DROP TABLE IF EXISTS admins CASCADE`);
+  await pool.query(`DROP TABLE IF EXISTS couriers CASCADE`);
+  await pool.query(`DROP TABLE IF EXISTS roles CASCADE`);
 
 
+  await pool.query(`CREATE TABLE IF NOT EXISTS roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(25) NOT NULL UNIQUE CHECK (name IN ('couriers', 'clients', 'admins'))
+    );`)
 
   await pool.query(`CREATE TABLE IF NOT EXISTS users (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -129,22 +137,36 @@ const setupDatabase = async (pool) => {
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
+    role_id INT NOT NULL REFERENCES roles(id),
     phone_number VARCHAR(255) NOT NULL
   );`)
 
-  /*
-  await pool.query(`CREATE TABLE IF NOT EXISTS roles (
+  await pool.query(`CREATE TABLE IF NOT EXISTS clients (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(25) NOT NULL UNIQUE CHECK (name IN ('courier', 'client', 'admin')),
-  )`)
-
+    user_id uuid UNIQUE REFERENCES users(id),
+    company_name VARCHAR(255) NOT NULL,
+    address TEXT NOT NULL,
+    created_at DATE DEFAULT CURRENT_DATE
+  );`);
 
   await pool.query(`CREATE TABLE IF NOT EXISTS couriers (
-    
-    
-  )`)
+    id SERIAL PRIMARY KEY,
+    user_id uuid UNIQUE REFERENCES users(id)
+  );`);
 
-  */
+
+  await pool.query(`CREATE TABLE IF NOT EXISTS admins (
+    id SERIAL PRIMARY KEY,
+    user_id uuid UNIQUE REFERENCES users(id)
+  );`);
+
+
+
+
+
+
+
+  await pool.query(`INSERT INTO roles (id, name) VALUES (1, 'clients'), (2, 'couriers'), (3, 'admins') ON CONFLICT (id) DO NOTHING`);
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS "user_sessions" (
