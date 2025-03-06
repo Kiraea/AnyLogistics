@@ -9,7 +9,7 @@ const verifySessionToken = (req, res, next) => {
         console.log(req.userId);
         next()
     }else{
-        res.status(401).json({error: "Unauthorized user"})
+        return res.status(401).json({error: "Unauthorized user"})
     }
 }
 
@@ -27,7 +27,7 @@ const verifyRole = async (req, res, next) => {
         next();
     }catch(e){
         console.log(e)
-        res.status(401).json({error: "Unauthorized user"})
+        return res.status(401).json({error: "Unauthorized user"})
     }
 
     // get userId, search database query, then get role then pu trole in req then next() pero no database yet

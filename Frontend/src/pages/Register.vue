@@ -1,7 +1,8 @@
 <script setup>
     import {ref} from "vue";
-
-
+    import {useRouter} from 'vue-router'
+    import axios from "axios";
+    const router = useRouter();
     // Variables for User table
     const username = ref("");
     const password = ref("");
@@ -11,52 +12,99 @@
     const email = ref("");
     const phoneNumber = ref("");
 
-
     //Roles for put in variable muna cause IDK ano pa role variables ng mga to para dynamic this jsut for labels
     // Need pa ng ref variables pero since no requirement yet then nop
 
-    const courierLabelA = "Vehicle Type"
-    const courierLabelB = "Model"
-    const courierLabelC = "License Number"
-
-
-
-    const clientLabelA = "Company Name"
-    const clientLabelB = "Company Address"
-    const clientLabelC = "Phone Number"
-
-
-    const adminLabelA = "Admin A"
-    const adminLabelB = "Admin B"
-    const adminLabelC = "Admin C"
+    // FOR CLIENTS (//1)
+    const companyName = ref("");
+    const companyAddress = ref ("");
 
 
 
 
-    const handleRegisterSubmit = () => {
-        if (username === ""){
-            console.log("no username")
+    const handleRegisterSubmit = async () => {
+
+    if (!username.value) {
+        console.log("No username provided")
+        return
+    }
+    if (!password.value) {
+        console.log("No password provided")
+        return
+    }
+    if (!firstName.value) {
+        console.log("No first name provided")
+        return
+    }
+    if (!lastName.value) {
+        console.log("No last name provided")
+        return
+    }
+    if (!email.value) {
+        console.log("No email provided")
+        return
+    }
+    if (!phoneNumber.value) {
+        console.log("No phone number provided")
+        return
+    }
+    if (!role.value) {
+        console.log("No role selected")
+        return
+    }
+    const userDetailsObj = {
+        username: username.value,
+        password: password.value,
+        roleId: role.value,
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        phoneNumber: phoneNumber.value
+    };
+
+
+    if (role.value === 1) { // clients
+        if (!companyName.value || !companyAddress.value){
+            console.log("No Company Name / Address")
             return
         }
-        if (password === ""){
-            consle.log("no password")
-        }
+        userDetailsObj["companyName"] = companyName.value
+        userDetailsObj["companyAddress"] = companyAddress.value
+    }
+    if (role.value === 2){ // couriers
+        
+    }
+    if (role.value === 3){ // admins
+
     }
 
+    console.log(userDetailsObj);
+    try {
+        // ✅ Make API request
+        const result = await axios.post('http://localhost:3000/api/users/register', userDetailsObj)
+        if (result.status === 200) {
+            console.log("Registration successful", result.data)
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {  // ✅ Check if error is from Axios
+            console.log("Error response data:", error.response?.data.message);
+        }
+    }
+}
 </script>
 
 <template>
     <form @submit.prevent="handleRegisterSubmit">
         <label>Username</label>
-        <input type="text" value="username" v-model="username" > 
+        <input type="text" name="username" v-model="username" > 
         <label>Password</label>
-        <input type="password" value="username" v-model="password"> 
+        <input type="password" name="password" v-model="password"> 
 
 
         <label>Firstname</label>
-        <input type="text" name="firstName" v-model="firstname" > 
+        <input type="text" name="firstName" v-model="firstName" > 
         <label>Lastname</label>
-        <input type="text" name="lastName" v-model="lastname"> 
+        <input type="text" name="lastName" v-model="lastName"> 
 
         <label>email</label>
         <input type="text" name="email" v-model="email" > 
@@ -65,49 +113,18 @@
 
 
         <select v-model="role">
-            <option value="courier">Courier</option>
-            <option value="admin">Admin</option>
-            <option  value="client">Client</option>
+            <option  :value=1>Client</option>
+            <option  :value=1>Client</option>
         </select>
 
 
-        <div v-if="role === 'courier'" >
-            <label> {{ courierLabelA }}</label>
-            <input type="text" :name='courierLabelA'>  <!-- Need V-model -->
 
-            <label>{{ courierLabelB }} </label>
-            <input type="text" :name='courierLabelB'>  <!-- Need V-model -->
-
-            <label>{{ courierLabelB }} </label>
-            <input type="text" :name='courierLabelB'>  <!-- Need V-model -->
+        <div v-if="role === 1" > <!-- 1 means client-->
+            <label>Company Name</label>
+            <input type="text" name='companyName' v-model="companyName">  <!-- Need V-model -->
+            <label>Address</label>
+            <input type="text" name='companyAddress' v-model="companyAddress">  <!-- Need V-model -->
         </div>
-
-
-
-        <div v-else-if="role === 'client'" >
-            <label> {{ clientLabelA }}</label>
-            <input type="text" :name='clientLabelA'>  <!-- Need V-model -->
-
-            <label>{{ clientLabelB}} </label>
-            <input type="text" :name='clientLabelB'>  <!-- Need V-model -->
-
-            <label>{{ clientLabelC}} </label>
-            <input type="text" :name='clientLabelC'>  <!-- Need V-model -->
-        </div>
-
-
-
-        <div v-else-if="role === 'admin'" >
-            <label> {{ adminLabelA}}</label>
-            <input type="text" :name='adminLabelA'>  <!-- Need V-model -->
-
-            <label>{{ adminLabelB}} </label>
-            <input type="text" :name='adminLabelB'>  <!-- Need V-model -->
-
-            <label>{{ adminLabelC}} </label>
-            <input type="text" :name='adminLabelC'>  <!-- Need V-model -->
-        </div>
-
 
 
 
