@@ -4,5 +4,5 @@
 </script>
 
 <template>
-    <div>MAIN ADMIN PAGE</div>
+    <div class="text-xl">MAIN ADMIN PAGE</div>
 </template>

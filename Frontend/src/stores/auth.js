@@ -5,7 +5,7 @@ import { axiosInstance } from '@/AxiosInstance';
 export const useAuthStore = defineStore('auth', () => {
     const isLoggedIn = ref(false);
     const isLoading = ref(true);
-    const role = ref(null);
+    const companyName = ref(null);
 
     function setIsLoggedIn(bool){
         isLoggedIn.value = bool
@@ -14,8 +14,8 @@ export const useAuthStore = defineStore('auth', () => {
     function setIsLoading(bool){
         isLoading.value = bool
     }
-    function setRole(newRole){
-        role.value = newRole
+    function setCompanyName(newCompanyName){
+        companyName.value = newCompanyName
     }
 
 
@@ -26,13 +26,13 @@ export const useAuthStore = defineStore('auth', () => {
             if (result.status === 200) {
                 setIsLoading(false);
                 setIsLoggedIn(true);
-                setRole(result.data.data.roleName);
+                setCompanyName(result.data.data.companyName);
             }
         } catch (error) {
             console.error('Session check failed:', error)
             isLoggedIn.value = false
             setIsLoading(false);
-            setRole(null);
+            setCompanyName(null);
         }
     }
 
@@ -44,8 +44,8 @@ export const useAuthStore = defineStore('auth', () => {
     return {
         isLoggedIn,
         isLoading,
-        role,
-        setRole,
+        companyName,
+        setCompanyName,
         setIsLoading,
         setIsLoggedIn,
         authReady,

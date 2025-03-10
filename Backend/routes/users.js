@@ -7,21 +7,22 @@ const router = express.Router()
 
 
 router.post('/login', async (req,res)=> {
+
     const {username, password} = req.body
-    console.log("HAPPENS");
+
     try {
         let result = await pool.query(queries.users.getUserByUsernameQ, [username]);
         if (result.rowCount > 0) {
             const user = result.rows[0];
             let match = await argon.verify(user.password, password)
             if (match){
-                req.session.userSessionObject = {userId: user.id, roleId: user.role_id};
-                res.status(200).json({status: "success", message: "succesfully login", data: {firstName: user.first_name, roleName: user.role_name}})
+                req.session.userSessionObject = {userId: user.id, companyId: user.company_id};
+                res.status(200).json({status: "success", message: "succesfully login", data: {firstName: user.first_name, companyName: user.company_name}})
             }else{
                 res.status(401).json({status: "fail", message: "invalid password"});
             }
         }else{
-            res.status(401).json({status: "success", message: "user not found"});
+            res.status(401).json({status: "fail", message: "user not found"});
         }
         
     }catch(e){
@@ -33,66 +34,96 @@ router.post('/login', async (req,res)=> {
 
 
 router.post('/register', async (req,res)=> {
-    const { username, password, firstName, lastName, email, phoneNumber, roleId } = req.body;
+    const {username, password, firstName, lastName, email, phoneNumber, companyId, companyName, locationsObj} = req.body;
 
 
-    if (!username || !password || !firstName || !lastName || !email || !phoneNumber || !roleId) {
+    if (!username || !password || !firstName || !lastName || !email || !phoneNumber || !companyId) {
+        console.log(e)
         return res.status(400).json({ status: "fail", message: "Incomplete credentials" });
     }
+    let newCompanyId = null;
 
-    let roleData = {}; // Store additional role-specific fields
-    if (roleId === 1) {
-        const { companyName, companyAddress } = req.body;
-        if (!companyName || !companyAddress) {
-            return res.status(400).json({ status: "fail", message: "Incomplete credentials for client" });
+
+    // if its 1 or 2 dont create
+    if (companyId !== 1 && companyId !== 2){
+        try {
+            let result = await pool.query(queries.company.createCompany, [companyName]);
+            if (result.rowCount === 0){
+                return res.status(400).json({ status: "fail", message: "not created company" });
+            }
+            newCompanyId = result.rows[0].id;
+        }catch(e){
+            console.log(e)
+            return res.status(500).json({ status: "fail", message: "not created company" });
         }
-        roleData = { companyName, companyAddress };
-    }
-    else if (roleId === 2){
-        // code for couriers
-    }else if (roleId === 3){
-        // code for admins
     }
 
+
+
+    // if its 1 or 2 dontcreate location ithink not sure
+    if (companyId !== 1 && companyId !== 2){
+        try{
+            for (let location of locationsObj ){
+                await pool.query(queries.location.createLocation, [newCompanyId, location.name, location.address, location.status])
+            }
+        }catch(e){
+            console.log(e)
+            return res.status(500).json({ status: "fail", message: "not created location" });
+        }
+    }
+
+
+    // basically if newCompany was not created then its the defauklt one which is admin or courier
+    if (newCompanyId === null){
+        newCompanyId = companyId;
+    }
+
+    let userId;
     try {
         // Hash password
         const hashedPassword = await argon.hash(password);
-
         // Insert user and retrieve their ID
-        const userResult = await pool.query(
-            `INSERT INTO users (username, password, first_name, last_name, email, phone_number, role_id) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-            [username, hashedPassword, firstName, lastName, email, phoneNumber, roleId]
-        );
-
+        const userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, true, newCompanyId]);
         if (userResult.rowCount === 0) {
             return res.status(400).json({ status: "fail", message: "User cannot be created" });
         }
+        userId = userResult.rows[0].id
 
-        const userId = userResult.rows[0].id; 
-
-
-        let roleInsertQuery;
-        let roleValues = [userId];
-
-        if (roleId === 1) { // Clients
-            roleInsertQuery = `INSERT INTO clients (user_id, company_name, address) VALUES ($1, $2, $3)`;
-            roleValues.push( roleData.companyName, roleData.companyAddress);
-        } else if (roleId === 2) { // Couriers
-            roleInsertQuery = `INSERT INTO couriers (user_id) VALUES ($1)`;
-        } else if (roleId === 3) { // Admins
-            roleInsertQuery = `INSERT INTO admins (user_id) VALUES ($1)`;
+        if (companyId !== 2){
+            return res.status(200).json({ status: "success", message: "User created successfully" });
         }
-
-        if (roleInsertQuery) {
-            await pool.query(roleInsertQuery, roleValues);
-        }
-
-        res.status(201).json({ status: "success", message: "User created successfully" });
-
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: "error", message: "Cannot create user" });
+        return res.status(500).json({ status: "error", message: "Cannot create user" });
+    }
+
+
+    // vech
+    let vehicleId;
+
+    if (companyId === 2){
+        try{
+            let result = await pool.query(queries.vehicle.getUnassignedVehicleQ);
+            if (result.rowCount === 0){
+                return res.status(500).json({ status: "fail", message: "not assigned vechile" });
+            }
+            vehicleId = result.rows[0].id
+            try{
+                let result2 =await pool.query(queries.vehicle.updateVehicleQ, [userId, vehicleId])
+                if (result2.rowCount === 0){
+                    return res.status(400).json({ status: "fail", message: "vechile has not been assigned" });
+                }
+                res.status(200).json({status:"success", message: "vehicle has been assigned"})
+            }catch(e){
+                console.log(e)
+                return res.status(500).json({ status: "fail", message: "not assigned vechile" });
+            }
+
+
+        }catch(e){
+            console.log(e);
+            return res.status(500).json({ status: "fail", message: "not assigned vechile" });
+        }
     }
 
 
@@ -117,26 +148,28 @@ router.get('/', async (req,res)=> {
 router.post('/checkSessionToken', verifySessionToken, verifyRole, async (req,res) => {
 
     let userId = req.userId;
-    let roleId = req.roleId;
+    let companyId = req.companyId;
 
-    if (!userId || !roleId){
+    if (!userId || !companyId){
         res.status(402).json({status:"error", message:"cannot get session credentials"});
     }
 
-    let roleName;
-    if (roleId === 1){
-        roleName = "clients"
+    let companyName;
+    if (companyId === 1){
+        companyName = "AnyLogisticsA"
     }
 
-    if (roleId === 2){
-        roleName = "couriers"
+    if (companyId === 2){
+        companyName = "AnyLogisticsB"
     }
 
-    if (roleId === 3){
-        roleName = "admins"
+    if (companyId > 2){
+        companyName = "clients"
     }
 
-    res.status(200).json({status:"success", message:"succesfully gotten session credentials", data:{roleName: roleName}})
+    console.log("COMPNY NAME + ", companyName)
+
+    res.status(200).json({status:"success", message:"succesfully gotten session credentials", data:{companyName:companyName}})
 });
 
 

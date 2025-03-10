@@ -27,14 +27,9 @@ app.use(cors({
 app.use(express.json()); // 
 app.use(urlencoded({extended:true}));
 
-
-
 app.get('/', function (req, res) {
   res.send('Hello World')
 })
-
-
-
 
 const runBackend = async () => {
   // TEMPORARY POOL/CLIENT TO MAKE AnyLogistics Schema
@@ -117,54 +112,77 @@ const runBackend = async () => {
 
 // ALL BACKEND CREATE COMMANDS
 
-
-
-
 const setupDatabase = async (pool) => {
+
+  await pool.query(`DROP TABLE IF EXISTS locations CASCADE;`);
   await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
-  await pool.query(`DROP TABLE IF EXISTS clients CASCADE`);
-  await pool.query(`DROP TABLE IF EXISTS admins CASCADE`);
-  await pool.query(`DROP TABLE IF EXISTS couriers CASCADE`);
-  await pool.query(`DROP TABLE IF EXISTS roles CASCADE`);
+  await pool.query(`DROP TABLE IF EXISTS companies CASCADE;`);
+  await pool.query(`DROP TABLE IF EXISTS vehicles CASCADE;`);
+  await pool.query(`DROP TYPE IF EXISTS location_status_enum CASCADE`); 
+  await pool.query(`DROP TYPE IF EXISTS vehicle_type_enum CASCADE`); 
+  await pool.query(`DROP TYPE IF EXISTS vehicle_status_enum CASCADE`); 
 
 
-  await pool.query(`CREATE TABLE IF NOT EXISTS roles (
+
+  await pool.query(`CREATE TYPE location_status_enum as ENUM('open', 'close');`);
+  await pool.query(`CREATE TYPE vehicle_type_enum as ENUM('light', 'medium', 'heavy');`);
+  await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
+
+
+
+  // 1 same company but admin(logistic), 2 same compny(logistic) but rider, and 3-9999 is basically other companies 
+  await pool.query(`CREATE TABLE IF NOT EXISTS companies (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(25) NOT NULL UNIQUE CHECK (name IN ('couriers', 'clients', 'admins'))
-    );`)
+    name VARCHAR(255) UNIQUE NOT NULL
+  );`);
+  
+  await pool.query(`INSERT INTO companies (id, name) VALUES (1, 'AnyLogisticsA'), (2, 'AnyLogisticsB') ON CONFLICT (id) DO NOTHING;`);
+  
+  await pool.query(`SELECT setval(pg_get_serial_sequence('companies', 'id'), COALESCE((SELECT MAX(id) FROM companies), 1), TRUE);`);
 
   await pool.query(`CREATE TABLE IF NOT EXISTS users (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY, 
     username VARCHAR(255) UNIQUE,
     password VARCHAR(255) NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    role_id INT NOT NULL REFERENCES roles(id),
-    phone_number VARCHAR(255) NOT NULL
+    phone_number VARCHAR(255) NOT NULL,
+    is_validated BOOLEAN NOT NULL,
+    company_id INT references companies(id)
   );`)
 
-  await pool.query(`CREATE TABLE IF NOT EXISTS clients (
+  await pool.query(`CREATE TABLE IF NOT EXISTS locations (
     id SERIAL PRIMARY KEY,
-    user_id uuid UNIQUE REFERENCES users(id),
-    company_name VARCHAR(255) NOT NULL,
-    address TEXT NOT NULL,
-    created_at DATE DEFAULT CURRENT_DATE
-  );`);
+    company_id INT references companies(id),
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    status location_status_enum
+  );`)
 
-  await pool.query(`CREATE TABLE IF NOT EXISTS couriers (
+  await pool.query(`CREATE TABLE IF NOT EXISTS vehicles (
     id SERIAL PRIMARY KEY,
-    user_id uuid UNIQUE REFERENCES users(id)
-  );`);
+    user_id INT references users(id) DEFAULT NULL,
+    vehicle_type vehicle_type_enum NOT NULL,
+    status vehicle_status_enum NOT NULL
+    );`)
 
 
-  await pool.query(`CREATE TABLE IF NOT EXISTS admins (
-    id SERIAL PRIMARY KEY,
-    user_id uuid UNIQUE REFERENCES users(id)
-  );`);
+    
+    await pool.query(`
+      INSERT INTO vehicles (user_id, vehicle_type, status)
+      VALUES 
+        (NULL, 'light', 'free'),
+        (NULL, 'medium', 'busy'),
+        (NULL, 'heavy', 'free'),
+        (NULL, 'light', 'busy'),
+        (NULL, 'medium', 'free'),
+        (NULL, 'heavy', 'busy'),
+        (NULL, 'light', 'free'),
+        (NULL, 'medium', 'busy'),
+        (NULL, 'heavy', 'free'),
+        (NULL, 'light', 'busy');`);
 
-
-  await pool.query(`INSERT INTO roles (id, name) VALUES (1, 'clients'), (2, 'couriers'), (3, 'admins') ON CONFLICT (id) DO NOTHING`);
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS "user_sessions" (

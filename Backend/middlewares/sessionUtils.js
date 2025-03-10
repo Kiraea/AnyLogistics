@@ -2,7 +2,7 @@ import { pool } from "../index.js";
 import { queries } from "../queries.js";
 
 const verifySessionToken = (req, res, next) => {
-    const userSessionObject =  req.session?.userSessionObject;
+    const userSessionObject = req.session?.userSessionObject;
     if (userSessionObject !== null && userSessionObject.userId != null){
         req.userId = userSessionObject.userId;
 
@@ -23,15 +23,12 @@ const verifyRole = async (req, res, next) => {
         if (result.rowCount === 0){
             res.status(401).json({error: "No Role found, Unauthorized"});
         }
-        req.roleId = result.rows[0].role_id;
+        req.companyId = result.rows[0].company_id;
         next();
     }catch(e){
         console.log(e)
         return res.status(401).json({error: "Unauthorized user"})
     }
-
     // get userId, search database query, then get role then pu trole in req then next() pero no database yet
-    
 }
-
 export {verifySessionToken, verifyRole}

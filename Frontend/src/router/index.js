@@ -31,9 +31,8 @@ const router = createRouter({
 
         const authStore = useAuthStore();
         await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
-
-        if (authStore.isLoggedIn === true && authStore.role === "couriers" && authStore.isLoading === false){
-          console.log(authStore.role);
+        if (authStore.isLoggedIn === true && authStore.companyName=== "AnyLogisticsB" && authStore.isLoading === false){
+          console.log(authStore.companyName);
           console.log("did go to client")
           return true
         }else{
@@ -45,15 +44,15 @@ const router = createRouter({
     },
     {
       path: '/admin',
-      name: '/admin',
+      name: 'admin',
       component: MainAdminPage,
       beforeEnter : async (to,from) => {
 
         const authStore = useAuthStore();
         await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
 
-        if (authStore.isLoggedIn === true && authStore.role === "admins" && authStore.isLoading === false){
-          console.log(authStore.role);
+        if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
+          console.log(authStore.companyName);
           console.log("did go to client")
           return true
         }else{
@@ -71,8 +70,9 @@ const router = createRouter({
         const authStore = useAuthStore();
         await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
 
-        if (authStore.isLoggedIn === true && authStore.role === "clients" && authStore.isLoading === false){
-          console.log(authStore.role);
+
+        if (authStore.isLoggedIn === true && authStore.companyName !== "AnyLogisticsA" && authStore.companyName !== "AnyLogisticsB" && authStore.isLoading === false){
+          console.log(authStore.companyName);
           console.log("did go to client")
           return true
         }else{
