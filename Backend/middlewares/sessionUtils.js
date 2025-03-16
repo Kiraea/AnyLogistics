@@ -21,7 +21,7 @@ const verifyRole = async (req, res, next) => {
         let result = await pool.query(queries.users.getUserByIdQ, [userId]);
 
         if (result.rowCount === 0){
-            res.status(401).json({error: "No Role found, Unauthorized"});
+            return res.status(401).json({error: "No Role found, Unauthorized"});
         }
         req.companyId = result.rows[0].company_id;
         next();

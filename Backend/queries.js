@@ -23,6 +23,17 @@ const queries = {
             FROM users u LEFT JOIN companies c
                          ON u.company_id = c.id
             WHERE u.username = $1;
+        `,
+        getUnverifiedUsersQ:`
+            SELECT u.*
+            FROM users u
+            WHERE is_validated = false
+        `,
+        updateVerificationUserQ:`
+            UPDATE users
+            SET is_validated = $1
+            WHERE id = $2
+            RETURNING *;
         `
     },
     company: {
@@ -48,7 +59,8 @@ const queries = {
             SET user_id = $1 
             WHERE id = $2;
         `
-    }
+    },
+
 }
 
 

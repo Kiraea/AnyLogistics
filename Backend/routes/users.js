@@ -15,7 +15,7 @@ router.post('/login', async (req,res)=> {
         if (result.rowCount > 0) {
             const user = result.rows[0];
             let match = await argon.verify(user.password, password)
-            if (match){
+            if (match && user.is_validated === true){
                 req.session.userSessionObject = {userId: user.id, companyId: user.company_id};
                 res.status(200).json({status: "success", message: "succesfully login", data: {firstName: user.first_name, companyName: user.company_name}})
             }else{
@@ -80,10 +80,19 @@ router.post('/register', async (req,res)=> {
 
     let userId;
     try {
-        // Hash password
         const hashedPassword = await argon.hash(password);
-        // Insert user and retrieve their ID
-        const userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, true, newCompanyId]);
+            let userResult;
+        if (companyId === 1){
+            userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, true, newCompanyId]);
+        }
+        if (companyId === 2){
+
+            userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, true, newCompanyId]);
+        }
+        if (companyId === 3){
+            userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, false, newCompanyId]);
+        }
+
         if (userResult.rowCount === 0) {
             return res.status(400).json({ status: "fail", message: "User cannot be created" });
         }
@@ -151,7 +160,7 @@ router.post('/checkSessionToken', verifySessionToken, verifyRole, async (req,res
     let companyId = req.companyId;
 
     if (!userId || !companyId){
-        res.status(402).json({status:"error", message:"cannot get session credentials"});
+        return res.status(402).json({status:"error", message:"cannot get session credentials"});
     }
 
     let companyName;
@@ -169,10 +178,43 @@ router.post('/checkSessionToken', verifySessionToken, verifyRole, async (req,res
 
     console.log("COMPNY NAME + ", companyName)
 
-    res.status(200).json({status:"success", message:"succesfully gotten session credentials", data:{companyName:companyName}})
+    return res.status(200).json({status:"success", message:"succesfully gotten session credentials", data:{companyName:companyName}})
 });
 
 
+router.get('/unverifiedUsers', async (req,res)=> {
+    try{
+        let result = await pool.query(queries.users.getUnverifiedUsersQ);
+        if (result.rowCount > 0){
+            console.log("trigger1")
+            console.log(result.rows);
+            res.status(200).json({status: "success", message: "succesfully get unverified user", data: result.rows})
+        }else{
+            console.log("trigger2")
+            res.status(200).json({status: "success", message: "cant get unverified user", data: null})
+        }
+    }catch(e){
+        console.log(e)
+        res.status(500).json({status: "error", message: "Cannot get unverified Users" })
+    }
+})
+
+router.patch(`/updateValidation`, async (req,res)=> {
+    const {userId, validationStatus} = req.body
+    try{
+        let result = await pool.query(queries.users.updateVerificationUserQ, [validationStatus, userId]);
+        if (result.rowCount > 0){
+            console.log("triggerv11")
+            res.status(200).json({status: "success", message: "succesfully updated unverified user", data: result.rows})
+        }else{
+            console.log("triggerv11")
+            res.status(200).json({status: "fail", message: "cant update unverified user", data: null})
+        }
+    }catch(e){
+        console.log(e)
+        res.status(500).json({status: "error", message: "Cannot update unverified User" })
+    }
+})
 
 
 export {router};

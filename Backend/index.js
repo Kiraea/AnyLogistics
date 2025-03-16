@@ -148,7 +148,7 @@ const setupDatabase = async (pool) => {
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     phone_number VARCHAR(255) NOT NULL,
-    is_validated BOOLEAN NOT NULL,
+    is_validated BOOLEAN NOT NULL DEFAULT FALSE,
     company_id INT references companies(id)
   );`)
 

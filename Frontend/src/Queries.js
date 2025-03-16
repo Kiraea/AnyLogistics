@@ -1,3 +1,51 @@
+import { AxiosError } from "axios";
 import { axiosInstance } from "./AxiosInstance";
+import { useQuery } from "@tanstack/vue-query";
+import { useQueryClient } from "@tanstack/vue-query";
+import { useMutation } from "@tanstack/vue-query";
+
+export const useGetUnverifiedUsers = () => { 
+    return useQuery({
+        queryKey: ['unverifiedUsers'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/users/unverifiedUsers`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                }
+            }
+        }
+
+    })
+}
+
+export const setValidationUser = async ({userId, validationStatus}) => {
+        console.log(validationStatus, "queries");
+        try {
+            const response = await axiosInstance.patch(`${import.meta.env.VITE_BASE_URL_LINK}/users/updateValidation`, {
+                userId: userId, 
+                validationStatus:validationStatus
+            });
+            if (response.status === 200) {
+                console.log("User validated:", userId);
+            }
+        } catch (error) {
+            console.error("Error updating user validation:", error);
+        }
+    };
 
 
+export const useSetValidationUser = () => {
+    const queryClient = useQueryClient();
+    const {mutateAsync: useSetValidationUserAsync} = useMutation({
+        mutationFn: setValidationUser,
+        onSuccess: () => queryClient.invalidateQueries({queryKey: ['unverifiedUsers']})
+    })
+    return {useSetValidationUserAsync};
+}
