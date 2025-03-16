@@ -33,6 +33,7 @@ app.get('/', function (req, res) {
 
 const runBackend = async () => {
   // TEMPORARY POOL/CLIENT TO MAKE AnyLogistics Schema
+  console.log(process.env.DB_DATABASE);
   const tempPool = new Pool({
     database: process.env.DB_DATABASE,
     user: process.env.DB_USERNAME,
