@@ -45,6 +45,10 @@ const queries = {
     location: {
         createLocation: `
             INSERT INTO locations (company_id, name, address, status) VALUES ($1, $2, $3, $4) RETURNING *;
+        `,
+        getLocationsQ:`
+            SELECT l.*
+            FROM locations l;
         `
     },
     vehicle: {
@@ -60,6 +64,18 @@ const queries = {
             WHERE id = $2;
         `
     },
+    shippingForm: {
+        getShippingFormQ:`
+            SELECT s.*
+            FROM shipping s
+        `,
+        addShippingFormQ:`
+            INSERT INTO shipping_form (client_id, weight, status, inventory, shipping_from, shipping_to) 
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *;
+        `,
+
+    }
 
 }
 

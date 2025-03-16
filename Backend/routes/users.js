@@ -90,7 +90,7 @@ router.post('/register', async (req,res)=> {
             userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, true, newCompanyId]);
         }
         if (companyId === 3){
-            userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, false, newCompanyId]);
+            userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, true, newCompanyId]);
         }
 
         if (userResult.rowCount === 0) {

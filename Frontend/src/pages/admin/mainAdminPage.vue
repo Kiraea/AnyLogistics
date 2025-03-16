@@ -17,7 +17,6 @@
         <div v-for="user in unverifiedUsersData">
             <span>{{ user.first_name }}</span>
             <button @click="updateUserValidation(user.id, true)">Accept</button>
-
         </div>
     </div>
 </template>
