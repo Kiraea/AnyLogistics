@@ -156,7 +156,7 @@ router.get('/', async (req,res)=> {
 
 router.post('/checkSessionToken', verifySessionToken, verifyRole, async (req,res) => {
 
-    let userId = req.userId;
+    let userId = req.id;
     let companyId = req.companyId;
 
     if (!userId || !companyId){

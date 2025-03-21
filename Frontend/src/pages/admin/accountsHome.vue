@@ -1,53 +1,86 @@
 <script setup>
-    import { useSetValidationUser } from '../../Queries';
-    import {useGetUnverifiedUsers} from '../../Queries';
+   
+   // Import components
+
     import HeaderX from "../../components/HeaderX.vue";
-    import { useRouter } from "vue-router";
+    import AdminNav from '@/components/AdminNav.vue';
+   
+   
+    // Import db query functions
+//    import {useGetUnverifiedUsers} from '../../Queries';
     
-    const {data: unverifiedUsersData, isLoading: unverifiedUsersIsLoading , isError: unverifiedUsersIsError, error: unverifiedUsersError } = useGetUnverifiedUsers();
-    const router = useRouter()
-
-    const {useSetValidationUserAsync} = useSetValidationUser(); 
-
-    const updateUserValidation = async (userId, validationStatus) => {
-        await useSetValidationUserAsync({userId, validationStatus});
-    }
     
-    function switchTo(url){
-        router.replace(url)
+//     // Retrieve all users from pool
+//    let unverifiedUsers = useGetUnverifiedUsers();
+
+//    console.log("hi")
+//    console.log(unverifiedUsers)
+
+// Ideal for an actual hosted db instance
+    async function getUsers() {
+        const url = `${import.meta.env.VITE_BASE_URL_LINK}/users/unverifiedUsers`;
+        try {
+            const response = await fetch(url)
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.data}`)
+            }
+
+            const json = await response.json()
+           
+            //console.log(json)
+            return json.data
+            
+        } catch (error) {
+            console.error(error.message)
+        }
     }
+
+    // let users = await getUsers()
+    // getUsers().then(result=> {
+    //     console.log(result)
+
+    //     users = result
+    // })
+    
+    // console.log(users)
+    
+    // fetch(`${import.meta.env.VITE_BASE_URL_LINK}/users/unverifiedUsers`).then(response=> {
+    //     if (!response.ok) {
+    //         throw new Error("could not fetch")
+    //     }
+    //     return response.json()
+    // })
+    // .then(data => console.log(data.data))
+    // .catch(error => console.error(error))
+
+    // function fetchUsers() {
+    //     let res = fetch(`${import.meta.env.VITE_BASE_URL_LINK}/users/unverifiedUsers`)
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 throw new Error ("could not fetch")
+    //             }
+    //             //console.log(response.json())
+                
+    //             return response.json()
+    //         })
+    //         return res;
+    // }
+
+    
 </script>
 
 <template>
-    <HeaderX/>
-    <body class="bg-white grow min-h-screen px-8">
+    
 
-        <!--Navigation button divs-->
-        <div name="subcategories" class="bg-blue-300 w-fit h-fit rounded-b-xl p-2 flex flex-row">
+    <Suspense>
+        <template #default>
+            <HeaderX/>
+            <AdminNav/>
+        </template>
+        <template #fallback>
+            <HeaderX/>
+            <AdminNav/>
+        </template>
+    </Suspense>
 
-            <div name="button1" class="items-center flex flex-col mx-2" @click="switchTo('/admin/accounts/viewAccounts')">
-                <button name="c1" class="rounded-full bg-white mx-4 p-4 w-fit">
-                    <v-icon name="co-user" scale="2.5" fill="#000000" animation="float" hover/>
-                </button>
-                <span class="text-center">View Users</span>
-            </div>
-
-            <div name="button2" class="items-center flex flex-col mx-2" @click="switchTo('/admin/accounts/approveAccounts')">
-                <button name="c2" class="rounded-full bg-white mx-4 p-4 w-fit">
-                    <v-icon name="fa-user-check" scale="2.5" fill="#000000" animation="float" hover/>
-                </button>
-                <span class="text-center">Approve Users</span>
-            </div>
-
-            <div name="button3" class="items-center flex flex-col mx-2">
-                <div name="c3" class="rounded-full bg-white mx-4 p-4 w-fit" @click="switchTo('/admin/accounts/companies')">
-                    <v-icon name="co-building" scale="2.5" fill="#000000" animation="float" hover/>
-                </div>
-                <span class="text-center">View Companies</span>
-            </div>
-
-        </div>
-
-        <router-view/>
-    </body>
 </template>

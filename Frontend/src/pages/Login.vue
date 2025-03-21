@@ -14,7 +14,7 @@
     const { setCompanyName , setIsLoading, setIsLoggedIn } = authStore; // cause functions
     const handleLogin = async () => { 
         try{
-            let result = await axiosInstance.post(`/users/login`, {
+            let result = await axiosInstance.post(`/login`, {
                 username: username.value,
                 password: password.value
             });
