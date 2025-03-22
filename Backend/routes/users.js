@@ -199,6 +199,20 @@ router.get('/unverifiedUsers', async (req,res)=> {
     }
 })
 
+router.get('/getAllUsers', async (req,res)=> {
+    try {
+        let result = await pool.query(queries.users.getUsersQ)
+        if (!result) {
+            res.status(200).json({status: "success", message: "cannot get users", data: null})
+        }
+        res.status(200).json({status: "success", message: "got users", data: result.rows})
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({status: "error", message: "cannot get users"})
+    }
+})
+
+
 router.patch(`/updateValidation`, async (req,res)=> {
     const {userId, validationStatus} = req.body
     try{

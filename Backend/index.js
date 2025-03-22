@@ -115,19 +115,19 @@ const runBackend = async () => {
 
 const setupDatabase = async (pool) => {
 
-  await pool.query(`DROP TABLE IF EXISTS locations CASCADE;`);
-  await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
-  await pool.query(`DROP TABLE IF EXISTS companies CASCADE;`);
-  await pool.query(`DROP TABLE IF EXISTS vehicles CASCADE;`);
-  await pool.query(`DROP TYPE IF EXISTS location_status_enum CASCADE`); 
-  await pool.query(`DROP TYPE IF EXISTS vehicle_type_enum CASCADE`); 
-  await pool.query(`DROP TYPE IF EXISTS vehicle_status_enum CASCADE`); 
+  // await pool.query(`DROP TABLE IF EXISTS locations CASCADE;`);
+  // await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
+  // await pool.query(`DROP TABLE IF EXISTS companies CASCADE;`);
+  // await pool.query(`DROP TABLE IF EXISTS vehicles CASCADE;`);
+  // await pool.query(`DROP TYPE IF EXISTS location_status_enum CASCADE`); 
+  // await pool.query(`DROP TYPE IF EXISTS vehicle_type_enum CASCADE`); 
+  // await pool.query(`DROP TYPE IF EXISTS vehicle_status_enum CASCADE`); 
 
 
 
-  await pool.query(`CREATE TYPE location_status_enum as ENUM('open', 'close');`);
-  await pool.query(`CREATE TYPE vehicle_type_enum as ENUM('light', 'medium', 'heavy');`);
-  await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
+  // await pool.query(`CREATE TYPE location_status_enum as ENUM('open', 'close');`);
+  // await pool.query(`CREATE TYPE vehicle_type_enum as ENUM('light', 'medium', 'heavy');`);
+  // await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
 
 
 
