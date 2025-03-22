@@ -25,6 +25,28 @@ export const useGetUnverifiedUsers = () => {
     })
 }
 
+
+export const useGetClientShippingForm = () => {
+    console.log("TEST route");
+    return useQuery({
+        queryKey: [`clientShippingForm`],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                }
+            }
+        }
+    })
+}
+
 export const useGetLocations = () => {
     return useQuery({
         queryKey: ['locations'],
@@ -118,7 +140,7 @@ export const useAddShippingForm = () => {
     const queryClient = useQueryClient()
     const {mutateAsync: useAddShippingFormAsync} = useMutation({
         mutationFn: addShippingForm,
-        onSuccess: ()=> queryClient.invalidateQueries({queryKey: ["shippingForm"]})
+        onSuccess: ()=> queryClient.invalidateQueries({queryKey: ["clientShippingForm"]})
     })
     return {useAddShippingFormAsync}
 }

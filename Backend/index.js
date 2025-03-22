@@ -201,7 +201,6 @@ const setupDatabase = async (pool) => {
         (NULL, 'heavy', 'free'),
         (NULL, 'light', 'busy');`);
 
-
   await pool.query(`CREATE TABLE IF NOT EXISTS shipping_form (
       id SERIAL PRIMARY KEY,
       client_id INT references users(id) NOT NULL,

@@ -66,8 +66,8 @@ const queries = {
     },
     shippingForm: {
         getShippingFormQ:`
-            SELECT s.*
-            FROM shipping s
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
+            FROM shipping_form s
         `,
         addShippingFormQ:`
             INSERT INTO shipping_form (client_id, weight, status, inventory, shipping_from, shipping_to) 
