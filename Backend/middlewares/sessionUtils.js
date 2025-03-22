@@ -3,7 +3,7 @@ import { queries } from "../queries.js";
 
 const verifySessionToken = (req, res, next) => {
     const userSessionObject = req.session?.userSessionObject;
-    if (userSessionObject !== null && userSessionObject.userId != null){
+    if (userSessionObject !== null && userSessionObject.id != null){
         req.userId = userSessionObject.userId;
 
         console.log(req.userId);
