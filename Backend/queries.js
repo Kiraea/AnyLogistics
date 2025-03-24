@@ -4,6 +4,12 @@ const queries = {
             SELECT u.*
             FROM users u;
         `,
+        getPublicInformationOfUserQ:`
+            SELECT u.first_name, u.last_name, c.name as company_name
+            FROM users u LEFT JOIN companies c
+                        ON u.company_id = c.id
+            WHERE u.id = $1;
+        `,
         getUserByIdQ: `
             SELECT u.*, c.name AS company_name
             FROM users u LEFT JOIN companies c
@@ -44,11 +50,17 @@ const queries = {
     },
     location: {
         createLocation: `
-            INSERT INTO locations (company_id, name, address, status) VALUES ($1, $2, $3, $4) RETURNING *;
+            INSERT INTO locations (company_id, name, address, city_id) VALUES ($1, $2, $3, $4) RETURNING *;
         `,
         getLocationsQ:`
             SELECT l.*
             FROM locations l;
+        `,
+        getLocationsByCompanyIdQ:`
+            SELECT l.*, c.name AS city_name
+            FROM locations l LEFT JOIN cities c
+                        ON l.city_id = c.id
+            WHERE l.company_id = $1;
         `
     },
     vehicle: {
@@ -69,12 +81,23 @@ const queries = {
             SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
             FROM shipping_form s
         `,
+        getShippingFormQByCompanyIdQ:`
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
+            FROM shipping_form s
+            WHERE s.company_id = $1;
+        `,
         addShippingFormQ:`
             INSERT INTO shipping_form (client_id, weight, status, inventory, shipping_from, shipping_to) 
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *;
         `,
 
+    },
+    city: {
+        getCitiesQ:`
+            SELECT c.*
+            FROM cities c;
+        `
     }
 
 }

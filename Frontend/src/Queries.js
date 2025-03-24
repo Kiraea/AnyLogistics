@@ -26,6 +26,8 @@ export const useGetUnverifiedUsers = () => {
 }
 
 
+
+
 export const useGetClientShippingForm = () => {
     console.log("TEST route");
     return useQuery({
@@ -52,7 +54,7 @@ export const useGetLocations = () => {
         queryKey: ['locations'],
         queryFn: async () => {
             try{
-                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/location`)
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/location/locationsById`)
                 if (result.status === 200){
                     console.log(result);
                     console.log(result.data.message , "message");
@@ -67,6 +69,43 @@ export const useGetLocations = () => {
 
     })
 }
+
+
+
+export const addlocation =  async ({name, address, cityId}) => {
+    try {
+        let result = await axiosInstance.post(`${import.meta.env.VITE_BASE_URL_LINK}/location`, {
+            name: name.value,
+            address: address.value, 
+            cityId: cityId.value
+        })
+        if (result.status === 200){
+            console.log(result.data.message , "message");
+            return result.data.data            
+        }
+    }catch(e){
+        console.log(e);
+        if (e instanceof AxiosError){
+            console.log(e)
+        }
+    }
+}
+
+
+export const useAddLocation = () => {
+    const queryClient = useQueryClient()
+    const {mutateAsync: useAddlocationAsync} = useMutation({
+        mutationFn: addlocation,
+        onSuccess: ()=> queryClient.invalidateQueries({queryKey: ["locations"]})
+    })
+    return {useAddlocationAsync}
+}
+
+
+
+
+
+
 
 export const setValidationUser = async ({userId, validationStatus}) => {
         console.log(validationStatus, "queries");
@@ -112,7 +151,6 @@ export const useGetShippingForm = () => {
         }
     })
 }
-
 
 
 export const addShippingForm =  async ({ weight,  inventory, shippingFrom, shippingTo}) => {

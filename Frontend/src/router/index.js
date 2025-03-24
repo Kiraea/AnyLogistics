@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/pages/Login.vue'
 import Register from '@/pages/Register.vue'
-import MainCourierPage from '@/pages/courier/mainCourierPage.vue'
+import MainCourierPage from '@/pages/courier/MainCourierPage.vue'
 import MainAdminPage from '@/pages/admin/mainAdminPage.vue'
-import MainClientPage from '@/pages/client/mainClientPage.vue'
+import MainClientPage from '@/pages/client/MainClientPage.vue'
 import { useAuthStore } from '@/stores/auth'
 import AccountsHome from '@/pages/admin/accountsHome.vue'
 

@@ -49,4 +49,23 @@ router.get('/', verifySessionToken, verifyRole, async (req,res)=> {
     }
 })
 
+
+
+router.get('/', verifySessionToken, verifyRole, async (req,res)=> {
+
+    const roleId = req.companyId;
+    
+    try{
+        let result = await pool.query(queries.shippingForm.getShippingFormQ);
+        if (result.rowCount > 0){
+            res.status(200).json({status: "success", message: "succesfully get shipping form", data: result.rows})
+        }else{
+            res.status(200).json({status: "success", message: "no shipping form present", data: null})
+        }
+    }catch(e){
+        console.log(e)
+        res.status(500).json({status: "error", message: "Cannot get shipping form server error" })
+    }
+})
+
 export {router};

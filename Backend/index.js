@@ -94,10 +94,12 @@ const runBackend = async () => {
   const { router: testRoutes } = await import('./routes/test.js');
   const { router: shippingFormRoutes } = await import('./routes/SRF.js');
   const { router: locationRoutes } = await import('./routes/location.js');
+  const { router: cityRoutes} = await import('./routes/city.js');
   app.use('/api/users', userRoutes);
   app.use('/api/shippingForm', shippingFormRoutes); 
   app.use('/api/test', testRoutes); 
   app.use('/api/location', locationRoutes); 
+  app.use('/api/city', cityRoutes); 
 
 
 
@@ -116,17 +118,19 @@ const runBackend = async () => {
 }
 
 // ALL BACKEND CREATE COMMANDS
-
+//dasdasdsa
 const setupDatabase = async (pool) => {
+
+  /*
 
   await pool.query(`DROP TABLE IF EXISTS shipping_form CASCADE`);
   await pool.query(`DROP TABLE IF EXISTS locations CASCADE;`);
   await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
   await pool.query(`DROP TABLE IF EXISTS companies CASCADE;`);
   await pool.query(`DROP TABLE IF EXISTS vehicles CASCADE;`);
+  await pool.query(`DROP TABLE IF EXISTS cities CASCADE;`);
 
-
-
+  
 
   await pool.query(`DROP TYPE IF EXISTS request_form_status_enum CASCADE`); 
   await pool.query(`DROP TYPE IF EXISTS request_form_status_approval_enum CASCADE`); 
@@ -134,6 +138,7 @@ const setupDatabase = async (pool) => {
   await pool.query(`DROP TYPE IF EXISTS vehicle_type_enum CASCADE`); 
   await pool.query(`DROP TYPE IF EXISTS vehicle_status_enum CASCADE`); 
 
+    
 
 
   await pool.query(`CREATE TYPE location_status_enum as ENUM('open', 'close');`);
@@ -142,7 +147,8 @@ const setupDatabase = async (pool) => {
 
 
   await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'in travel', 'waiting', 'cancelled', 'finished');`);
-
+  
+  */
 
 
   // 1 same company but admin(logistic), 2 same compny(logistic) but rider, and 3-9999 is basically other companies 
@@ -150,7 +156,6 @@ const setupDatabase = async (pool) => {
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL
   );`);
-  
 
 
 
@@ -170,12 +175,18 @@ const setupDatabase = async (pool) => {
     company_id INT references companies(id)
   );`)
 
+  await pool.query(`CREATE TABLE IF NOT EXISTS cities(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+    );`)
+
+
   await pool.query(`CREATE TABLE IF NOT EXISTS locations (
     id SERIAL PRIMARY KEY,
     company_id INT references companies(id),
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    status location_status_enum
+    city_id INT references cities(id)
   );`)
 
   await pool.query(`CREATE TABLE IF NOT EXISTS vehicles (
@@ -186,20 +197,40 @@ const setupDatabase = async (pool) => {
     );`)
 
 
+
+  
     
-    await pool.query(`
-      INSERT INTO vehicles (user_id, vehicle_type, status)
-      VALUES 
-        (NULL, 'light', 'free'),
-        (NULL, 'medium', 'busy'),
-        (NULL, 'heavy', 'free'),
-        (NULL, 'light', 'busy'),
-        (NULL, 'medium', 'free'),
-        (NULL, 'heavy', 'busy'),
-        (NULL, 'light', 'free'),
-        (NULL, 'medium', 'busy'),
-        (NULL, 'heavy', 'free'),
-        (NULL, 'light', 'busy');`);
+  await pool.query(`
+    INSERT INTO vehicles (user_id, vehicle_type, status)
+    VALUES 
+      (NULL, 'light', 'free'),
+      (NULL, 'medium', 'busy'),
+      (NULL, 'heavy', 'free'),
+      (NULL, 'light', 'busy'),
+      (NULL, 'medium', 'free'),
+      (NULL, 'heavy', 'busy'),
+      (NULL, 'light', 'free'),
+      (NULL, 'medium', 'busy'),
+      (NULL, 'heavy', 'free'),
+      (NULL, 'light', 'busy');`);
+      
+
+      
+      
+  await pool.query(`
+    INSERT INTO cities (name)
+    VALUES 
+      ('Manila'),
+      ('Quezon'),
+      ('Makati'),
+      ('Pasig'),
+      ('Taguig'),
+      ('Mandaluyong'),
+      ('Pasay'),
+      ('Caloocan'),
+      ('Muntinlupa')
+    ON CONFLICT (name) DO NOTHING;`);
+    
 
   await pool.query(`CREATE TABLE IF NOT EXISTS shipping_form (
       id SERIAL PRIMARY KEY,

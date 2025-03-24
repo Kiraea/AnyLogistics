@@ -21,6 +21,13 @@ export const useAuthStore = defineStore('auth', () => {
 
 
     const checkSessionToken = async () => {
+
+        const currentPath = window.location.pathname;
+        console.log(currentPath);
+        if (currentPath === "/login" || currentPath === "/register") {
+            return;
+        }
+
         try {
             const result = await axiosInstance.post(`/users/checkSessionToken`)
             if (result.status === 200) {
