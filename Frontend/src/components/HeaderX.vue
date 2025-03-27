@@ -4,6 +4,7 @@
     import { axiosInstance } from '@/AxiosInstance';
     import { AxiosError } from 'axios';
     import { ref } from 'vue';
+    import { RouterLink } from 'vue-router';
     const authStore = useAuthStore()
     const {isLoggedIn} = storeToRefs(authStore)
 
@@ -44,6 +45,7 @@
         <span class="text-3xl font-bold text-white">Any<span class="text-white">Logistics</span></span>
             <div v-if="isLoggedIn" class="font-bold text-white">
                 Welcome {{ firstName }}, {{ lastName }}
+                <RouterLink to="/profile"> <button>Profile</button> </RouterLink>
             </div>
     </header>
 

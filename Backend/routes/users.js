@@ -232,6 +232,27 @@ router.get(`/getPublicInformationOfUser`, verifySessionToken, async (req,res)=> 
         res.status(500).json({status: "error", message: "Cannot get user public info due to server errors" })
     }    
 })
+
+router.patch('/updateEmailAndPhone', verifySessionToken, async (req,res) => {
+    const {userId} = req
+    const {email, phoneNumber} = req.body
+
+    console.log(userId, email, phoneNumber);
+    console.log(userId);
+    try{
+        let result = await pool.query(queries.users.updateEmailAndPhoneNumberQ, [email,phoneNumber, userId]);
+        if (result.rowCount > 0){
+            res.status(200).json({status: "success", message: "succesfully gotten public information of user", data: result.rows})
+        }else{
+            res.status(200).json({status: "fail", message: "cant get user public", data: null})
+        }
+    }catch(e){
+        console.log(e)
+        res.status(500).json({status: "error", message: "Cannot get user public info due to server errors" })
+    }    
+})
+
+
 export {router};
 
 

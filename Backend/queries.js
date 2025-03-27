@@ -5,7 +5,7 @@ const queries = {
             FROM users u;
         `,
         getPublicInformationOfUserQ:`
-            SELECT u.first_name, u.last_name, c.name as company_name
+            SELECT u.first_name, u.last_name, c.name as company_name, u.email, u.phone_number, c.id
             FROM users u LEFT JOIN companies c
                         ON u.company_id = c.id
             WHERE u.id = $1;
@@ -39,6 +39,13 @@ const queries = {
             UPDATE users
             SET is_validated = $1
             WHERE id = $2
+            RETURNING *;
+        `,
+        updateEmailAndPhoneNumberQ:`
+            UPDATE users
+            SET email = $1, 
+                phone_number = $2
+            WHERE id = $3
             RETURNING *;
         `
     },
@@ -91,6 +98,11 @@ const queries = {
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *;
         `,
+        getShippingFormByVehicleId:`
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
+            FROM shipping_form s
+            WHERE s.vehicle_id = $1;        
+        `
 
     },
     city: {

@@ -182,3 +182,77 @@ export const useAddShippingForm = () => {
     })
     return {useAddShippingFormAsync}
 }
+
+
+
+
+export const useGetUserPublicInformation= () => { 
+    return useQuery({
+        queryKey: ['userInformation'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/users/getPublicInformationOfUser`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                }
+            }
+        }
+
+    })
+}
+
+export const updateUserPhoneAndEmail = async ({email, phoneNumber}) => {
+    try {
+        let result = await axiosInstance.patch(`${import.meta.env.VITE_BASE_URL_LINK}/users/updateEmailAndPhone`, {
+            email: email,
+            phoneNumber: phoneNumber
+        })
+        if (result.status === 200){
+            console.log(result.data.message , "message");
+            return result.data.data            
+        }
+    }catch(e){
+        console.log(e);
+        if (e instanceof AxiosError){
+            console.log(e)
+        }
+    }    
+}
+
+export const useUpdateUserPhoneAndEmail = () => {
+    const queryClient = useQueryClient()
+    const {mutateAsync: useUpdateUserPhoneAndEmailAsync} = useMutation({
+        mutationFn: updateUserPhoneAndEmail,
+        onSuccess: () => {queryClient.invalidateQueries({queryKey: ['userInformation']})}
+    })
+    return {useUpdateUserPhoneAndEmailAsync}
+
+}
+
+
+export const useGetShippingFormVehicleId = () => {
+    return useQuery({
+        queryKey: ['shippingFormVehicleId'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/getShippingFormByVehicleId`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                }
+            }
+        }
+
+    })    
+}

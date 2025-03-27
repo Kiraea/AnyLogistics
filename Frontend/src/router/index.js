@@ -6,6 +6,7 @@ import MainAdminPage from '@/pages/admin/mainAdminPage.vue'
 import MainClientPage from '@/pages/client/MainClientPage.vue'
 import { useAuthStore } from '@/stores/auth'
 import AccountsHome from '@/pages/admin/accountsHome.vue'
+import profile from '@/pages/profile.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,24 @@ const router = createRouter({
           return true
         }else{
           console.log("did not go to client")
+          return {name: 'login'}
+        }
+      }
+
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: profile,
+      beforeEnter : async (to,from) => {
+
+        const authStore = useAuthStore();
+        await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
+        if (authStore.isLoggedIn === true  && authStore.isLoading === false){
+          console.log("did go to profile")
+          return true
+        }else{
+          console.log("did not go to profile")
           return {name: 'login'}
         }
       }
