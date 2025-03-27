@@ -51,12 +51,12 @@ router.get('/', verifySessionToken, verifyRole, async (req,res)=> {
 
 
 
-router.get('/', verifySessionToken, verifyRole, async (req,res)=> {
+router.get('/shippingFormByUserId', verifySessionToken, verifyRole, async (req,res)=> {
 
-    const roleId = req.companyId;
+    const userId = req.userId;
     
     try{
-        let result = await pool.query(queries.shippingForm.getShippingFormQ);
+        let result = await pool.query(queries.shippingForm.getShippingFormQByUserIdQ, [userId]);
         if (result.rowCount > 0){
             res.status(200).json({status: "success", message: "succesfully get shipping form", data: result.rows})
         }else{
@@ -82,6 +82,28 @@ router.get('/getShippingFormByVehicleId', verifySessionToken, verifyRole, async(
         console.log(e)
         res.status(500).json({status: "error", message: "Cannot get shipping form server error" })
     }    
+})
+
+
+
+router.patch('/updateStatus', verifySessionToken, async (req,res) => {
+
+    const {newStatus, formId} = req.body
+    console.log(newStatus, formId)
+    try{
+
+        let result = await pool.query(queries.shippingForm.updateShippingFormStatusById, [newStatus, formId])
+        if (result.rowCount > 0){
+            res.status(200).json({status: "success", message: "succesfully update shipping form", data: result.rows})
+        }else{
+            res.status(200).json({status: "success", message: "not updated shipping form ", data: null})
+        }
+    }catch(e){
+        console.log(e)
+        res.status(500).json({status: "error", message: "Cannot get shipping form server error" })
+    }
+
+
 })
 
 

@@ -81,6 +81,12 @@ const queries = {
             UPDATE vehicles
             SET user_id = $1 
             WHERE id = $2;
+        `,
+        getVehicleByUserIdQ:`
+            SELECT v.*
+            FROM vehicles v
+            WHERE v.user_id = $1 
+            LIMIT 1;
         `
     },
     shippingForm: {
@@ -88,10 +94,10 @@ const queries = {
             SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
             FROM shipping_form s
         `,
-        getShippingFormQByCompanyIdQ:`
+        getShippingFormQByUserIdQ:`
             SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
             FROM shipping_form s
-            WHERE s.company_id = $1;
+            WHERE s.client_id = $1;
         `,
         addShippingFormQ:`
             INSERT INTO shipping_form (client_id, weight, status, inventory, shipping_from, shipping_to) 
@@ -102,6 +108,12 @@ const queries = {
             SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
             FROM shipping_form s
             WHERE s.vehicle_id = $1;        
+        `,
+        updateShippingFormStatusById: `
+            UPDATE shipping_form
+            SET status = $1
+            WHERE id = $2
+            RETURNING *;
         `
 
     },

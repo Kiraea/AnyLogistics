@@ -29,12 +29,11 @@ export const useGetUnverifiedUsers = () => {
 
 
 export const useGetClientShippingForm = () => {
-    console.log("TEST route");
     return useQuery({
         queryKey: [`clientShippingForm`],
         queryFn: async () => {
             try{
-                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm`)
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/shippingFormByUserId`)
                 if (result.status === 200){
                     console.log(result);
                     console.log(result.data.message , "message");
@@ -255,4 +254,38 @@ export const useGetShippingFormVehicleId = () => {
         }
 
     })    
+}
+
+
+export const updateStatusForm = async ({formId, newStatus}) => {
+    console.log("new status: ", newStatus);
+    try {
+        let result = await axiosInstance.patch(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/updateStatus`, {
+            formId: formId,
+            newStatus: newStatus
+        })
+        if (result.status === 200){
+            console.log(result.data.message , "message");
+            return result.data.data            
+        }
+    }catch(e){
+        console.log(e);
+        if (e instanceof AxiosError){
+            console.log(e)
+        }
+    }    
+}
+
+export const useUpdateStatusForm = () => {
+    const queryClient = useQueryClient()
+    const {mutateAsync: useUpdateStatusFormAsync } = useMutation({
+        mutationFn: updateStatusForm,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleId']});
+            queryClient.invalidateQueries({queryKey: ['shippingForm']});
+            queryClient.invalidateQueries({queryKey: ['clientShippingForm']});
+        }
+    })
+    return {useUpdateStatusFormAsync}
+
 }
