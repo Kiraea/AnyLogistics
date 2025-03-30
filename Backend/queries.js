@@ -87,6 +87,16 @@ const queries = {
             FROM vehicles v
             WHERE v.user_id = $1 
             LIMIT 1;
+        `,
+        getAvailableVehicleForSRFQByCapacityAndCity: `
+            SELECT v.id, v.max_capacity_kg, COALESCE(SUM(s.weight), 0) AS current_capacity,
+            (v.max_capacity_kg - COALESCE(SUM(s.weight), 0)) as available_space
+            FROM vehicles v LEFT JOIN shipping_form s
+                        ON v.id = s.vehicle_id
+            WHERE v.city_id = $1
+            GROUP BY v.id, v.max_capacity_kg
+            HAVING (v.max_capacity_kg - COALESCE(SUM(s.weight), 0)) > $2
+            LIMIT 1;
         `
     },
     shippingForm: {
@@ -95,8 +105,20 @@ const queries = {
             FROM shipping_form s
         `,
         getShippingFormQByUserIdQ:`
-            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
-            FROM shipping_form s
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate,
+            c_from.name AS from_city_name,
+            c_from.id AS from_city_id,
+            c_to.name AS to_city_name,
+            c_to.id AS to_city_id,
+            l_from.name AS from_location_name,
+            l_from.address AS from_location_address,
+            l_to.name AS to_location_name,
+            l_to.address AS to_location_address
+            FROM shipping_form s JOIN locations l_from
+            on s.shipping_from = l_from.id
+            JOIN cities c_from on l_from.city_id = c_from.id
+            JOIN locations l_to ON s.shipping_to = l_to.id
+            JOIN cities c_to ON l_to.city_id = c_to.id
             WHERE s.client_id = $1;
         `,
         addShippingFormQ:`
@@ -114,15 +136,43 @@ const queries = {
             SET status = $1
             WHERE id = $2
             RETURNING *;
-        `
+        `,
+        getShippingFormQIncludingLocationAndCityOfToAndFrom: `
+            SELECT s.id,
+            c_from.name AS from_city_name,
+            c_from.id AS from_city_id,
+            c_to.name AS to_city_name,
+            c_to.id AS to_city_id
+            FROM shipping_form s JOIN locations l_from
+            on s.shipping_from = l_from.id
+            JOIN cities c_from on l_from.city_id = c_from.id
+            JOIN locations l_to ON s.shipping_to = l_to.id
+            JOIN cities c_to ON l_to.city_id = c_to.id;
+        `,
+        updateShippingFormToAVehicleId: `
+            UPDATE shipping_form
+            SET vehicle_from_id = $1
+            WHERE id = $2
+            RETURNING *;
+        `,
+        updateShippingFormToAVehicleToId: `
+        UPDATE shipping_form
+        SET vehicle_to_id = $1
+        WHERE id = $2
+        RETURNING *;
+    `
 
     },
+
+
+
     city: {
         getCitiesQ:`
             SELECT c.*
             FROM cities c;
         `
-    }
+    },
+
 
 }
 

@@ -4,15 +4,16 @@
 import HeaderX from '@/components/HeaderX.vue';
 import UpdateProfile from '@/components/UpdateProfile.vue';
 import { watchEffect } from 'vue';
-
+import { useRouter } from 'vue-router';
 const {data: userData = [], isLoading:userIsLoading, isError: userIsError, error: userError} = useGetUserPublicInformation();
 
 const firstName = ref("")
 const lastName= ref("")
 const email = ref("")
 const phoneNumber = ref("")
+const companyName = ref("")
 
-
+const router = useRouter()
 
 watchEffect(() => {
     if (userData.value && userData.value.length > 0) {
@@ -20,6 +21,7 @@ watchEffect(() => {
         lastName.value = userData.value[0].last_name;
         email.value = userData.value[0].email;
         phoneNumber.value = userData.value[0].phone_number;
+        companyName.value = userData.value[0].company_name;
     }
 });
 
@@ -29,6 +31,9 @@ const closeUpdateProfileModal = () => {
     isUpdateProfileOpen.value = false
 }
 
+const handleBackLogic = () => {
+    router.go(-1)
+}
 
 </script>
 
@@ -41,16 +46,16 @@ const closeUpdateProfileModal = () => {
 
         <UpdateProfile :isOpen="isUpdateProfileOpen" :firstName="firstName" :lastName="lastName" :email="email" :phoneNumber="phoneNumber" @close="closeUpdateProfileModal"/>
 
-
+        <button @click="handleBackLogic">Back Button</button>
 
         <div v-if="userData.length > 0" class="bg-white flex flex-col gap-2 mx-5 p-5 rounded-2xl">
             <h1 class="font-bold text-2xl">User Information</h1>
             <div class="flex flex-col gap-1">
-                <div>First Name: {{ userData[0].first_name }}</div>
-                <div>Last Name: {{ userData[0].last_name }}</div>
-                <div>Email: {{ userData[0].email }}</div>
-                <div>Phone Number: {{ userData[0].phone_number }}</div>
-                <div>Company Name: {{ userData[0].company_name }}</div>
+                <div>First Name: {{  firstName }}</div>
+                <div>Last Name: {{ lastName }}</div>
+                <div>Email: {{ email }}</div>
+                <div>Phone Number: {{ phoneNumber }}</div>
+                <div>Company Name: {{ companyName }} </div>
             </div>
 
         </div>

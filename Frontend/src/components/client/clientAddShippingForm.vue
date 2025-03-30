@@ -11,7 +11,7 @@
     const emit = defineEmits(['close']);
 
     let weight = ref(-1)
-    let shippingTo = ref("")
+    let shippingTo = ref(-1) // LocationId
     let shippingFrom = ref(-1) // location ID
     const {useAddShippingFormAsync} = useAddShippingForm();
     const {data: locationsData, isLoading:locationsIsLoading, error:locationsError, isError:locationsIsError} = useGetLocations();
@@ -35,7 +35,7 @@
             console.log(item);
         }
 
-        if (weight.value < 1 || shippingTo.value === "" || shippingFrom.value === "" || inventory.value.length < 1){
+        if (weight.value < 1 || shippingTo.value === -1 || shippingFrom.value === -1 || inventory.value.length < 1){
             console.log("incomplete fields");
             return;
         }
@@ -62,9 +62,12 @@
 
                         <button @click="addItem" class="bg-gray-200">Add</button>
 
-                        <label>shipping To</label>
-                        <input type="text" class="border-black border-2 rounded-2xl p-2" name="shippingTo" v-model="shippingTo"> 
 
+                        <label>Shipping From</label>
+                        <!--  SHOULD CHANGE THE SELECT HERE to get the location data value and use it as an option-->
+                        <select v-model="shippingTo" class="border-black border-2 rounded-2xl p-2">
+                            <option v-for="location in locationsData" :key="location.id" :value="location.id">{{ location.name }}</option>
+                        </select>
 
                         <label>Shipping From</label>
                         <!--  SHOULD CHANGE THE SELECT HERE to get the location data value and use it as an option-->

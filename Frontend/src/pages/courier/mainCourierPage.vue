@@ -12,7 +12,7 @@
     //const {data: shippingFormVehicleData , isLoading: shippingFormVehicleIsLoading , isError: shippingFormVehicleIsError, error: shippingFormVehicleError } = useGetShippingFormVehicleId();
     
 
-    const options = ref(['pending', 'declined', 'ready for pickup', 'in travel', 'waiting', 'cancelled', 'finished']);
+    const options = ref(['pending', 'declined', 'ready for pickup', 'traveling to sortation', 'waiting', 'traveling to destination', 'cancelled', 'finished']);
 
     const {data: shippingFormData , isLoading: shippingFormIsLoading , isError: shippingFormIsError, error: shippingFormError } = useGetShippingForm()
 

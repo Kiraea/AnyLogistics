@@ -30,7 +30,7 @@ import clientAddLocation from '@/components/client/clientAddLocation.vue';
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col text-black bg-white box-border gap-5">
+    <div class="min-h-screen flex flex-col text-black box-border gap-5">
 
         <HeaderX/>
         <div class="flex flex-col gap-5 p-5">
@@ -40,7 +40,7 @@ import clientAddLocation from '@/components/client/clientAddLocation.vue';
 
             <clientAddShippingForm :isOpen="isAddRequestFormOpen" @close="closeAddRFModal"/>   <!-- use of @ when parent listens to an event in this case exit of the popup form-->
            
-            <h2>Shipping Forms</h2>
+            <h2 class="font-bold text-4xl">Shipping Forms</h2>
             <clientShippingForms/>
 
 
@@ -49,10 +49,10 @@ import clientAddLocation from '@/components/client/clientAddLocation.vue';
                 <button class="bg-blue-400 rounded-2xl p-2 font-bold" @click="openAddLocationModal">Add Locations</button>
             </div>
 
+            <h2 class="font-bold text-4xl">Locations</h2>
             <ClientViewLocation/>
 
 
-            <h2>Locations</h2>
             <clientAddLocation :isOpen="isAddLocationOpen" @close="closeAddLocationModal"/>
 
 

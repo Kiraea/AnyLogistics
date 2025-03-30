@@ -9,7 +9,7 @@ import { useGetLocations } from '@/Queries';
 
 
 <template>
-    <div class="grid grid-cols-4">
+    <div class="grid grid-cols-4 gap-5">
         <div v-for="location in locationsData" class="flex flex-col border-black border-2">
             <span>Name: {{location.name}}</span>
             <span>Address: {{location.address}}</span>

@@ -121,7 +121,6 @@ const runBackend = async () => {
 //dasdasdsa
 const setupDatabase = async (pool) => {
 
-  /*
 
   await pool.query(`DROP TABLE IF EXISTS shipping_form CASCADE`);
   await pool.query(`DROP TABLE IF EXISTS locations CASCADE;`);
@@ -146,9 +145,8 @@ const setupDatabase = async (pool) => {
   await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
 
 
-  await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'in travel', 'waiting', 'cancelled', 'finished');`);
+  await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'traveling to sortation', 'waiting', 'cancelled', 'traveing to destination', 'finished');`);
   
-  */
 
 
   // 1 same company but admin(logistic), 2 same compny(logistic) but rider, and 3-9999 is basically other companies 
@@ -192,31 +190,12 @@ const setupDatabase = async (pool) => {
   await pool.query(`CREATE TABLE IF NOT EXISTS vehicles (
     id SERIAL PRIMARY KEY,
     user_id INT references users(id) DEFAULT NULL,
-    vehicle_type vehicle_type_enum NOT NULL,
-    status vehicle_status_enum NOT NULL
+    vehicle_type VARCHAR(100) NOT NULL,
+    max_capacity_kg INT NOT NULL,
+    city_id INT references cities(id) NOT NULL
     );`)
 
 
-
-  
-    
-  await pool.query(`
-    INSERT INTO vehicles (user_id, vehicle_type, status)
-    VALUES 
-      (NULL, 'light', 'free'),
-      (NULL, 'medium', 'busy'),
-      (NULL, 'heavy', 'free'),
-      (NULL, 'light', 'busy'),
-      (NULL, 'medium', 'free'),
-      (NULL, 'heavy', 'busy'),
-      (NULL, 'light', 'free'),
-      (NULL, 'medium', 'busy'),
-      (NULL, 'heavy', 'free'),
-      (NULL, 'light', 'busy');`);
-      
-
-      
-      
   await pool.query(`
     INSERT INTO cities (name)
     VALUES 
@@ -231,17 +210,31 @@ const setupDatabase = async (pool) => {
       ('Muntinlupa')
     ON CONFLICT (name) DO NOTHING;`);
     
-
+        
+  await pool.query(`
+    INSERT INTO vehicles (user_id, vehicle_type, max_capacity_kg, city_id)
+    VALUES 
+   (NULL, 'light', 500, 1),
+    (NULL, 'medium', 500, 2),
+    (NULL, 'heavy', 1000, 3),
+    (NULL, 'heavy', 1000, 4),
+    (NULL, 'heavy', 1000, 5),
+    (NULL, 'light', 200, 6),
+    (NULL, 'light', 200, 7),
+    (NULL, 'light', 200, 8),
+    (NULL, 'light', 200, 9);`)
+      
   await pool.query(`CREATE TABLE IF NOT EXISTS shipping_form (
       id SERIAL PRIMARY KEY,
       client_id INT references users(id) NOT NULL,
       weight DECIMAL NOT NULL,
       status request_form_status_enum NOT NULL,
       inventory JSONB NOT NULL,
-      shipping_to VARCHAR(255) NOT NULL,
+      shipping_to INT references locations(id) NOT NULL,
       shipping_from INT references locations(id) NOT NULL,
       created_at DATE NOT NULL DEFAULT CURRENT_DATE,
-      vehicle_id INT references vehicles(id) 
+      vehicle_to_id INT references vehicles(id), 
+      vehicle_from_id INT references vehicles(id) 
     );`);
 
 
