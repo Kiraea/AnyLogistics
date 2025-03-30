@@ -33,7 +33,7 @@ const closeUpdateProfileModal = () => {
 
 const handleBackLogic = () => {
     router.go(-1)
-}
+}   
 
 </script>
 
