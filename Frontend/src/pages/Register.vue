@@ -4,6 +4,16 @@
     import axios from "axios";
     import HeaderX from '../components/HeaderX.vue'
     import { RouterLink } from 'vue-router';
+    import { onMounted } from "vue";
+
+
+    // to remove all cache queries when visiting login /register
+    import { useQueryClient } from "@tanstack/vue-query";
+    const queryClient = useQueryClient()
+
+
+
+
     const router = useRouter();
     // Variables for User table
     const username = ref("");
@@ -13,18 +23,47 @@
     const lastName = ref("");
     const email = ref("");
     const phoneNumber = ref("");
-    const locations = ref([{name: "", address:"", status:""}]);
+    const locations = ref([{name: "", address:"", cityId:-1}]);
+    const cityId = ref(-1);
 
+
+    const cities = ref([]);
+
+
+    onMounted(()=> {
+        queryClient.clear();
+
+        const getCities = async () => {
+            try{
+                let result = await axios.get(`${import.meta.env.VITE_BASE_URL_LINK}/city`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    cities.value = result.data.data
+                }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                }
+            }
+        }
+        getCities()
+
+
+    })
 
 
 
     const addLocation = () => {
-        locations.value.push({ name: "", address: "", status:""});
+        locations.value.push({ name: "", address: "", cityId:-1});
     };
 
     const removeLocation = (index) => {
         locations.value.splice(index, 1);
     };
+
+
+
 
     //Roles for put in variable muna cause IDK ano pa role variables ng mga to para dynamic this jsut for labels
     // Need pa ng ref variables pero since no requirement yet then nop
@@ -65,6 +104,7 @@
     if (!companyName.value){
         console.log("No companyName selected")
     }
+
     const userDetailsObj = {
         username: username.value,
         password: password.value,
@@ -73,12 +113,12 @@
         lastName: lastName.value,
         email: email.value,
         phoneNumber: phoneNumber.value,
-        companyName: companyName.value
+        companyName: companyName.value,
     };
 
-    if (companyId.value === 3) { // clients
-        if (!companyName.value || locations.value[0].name === ""){
-
+    console.log(locations.value[0].cityId);
+    if (companyId.value > 2) { // clients
+        if (!companyName.value || locations.value[0].name === "" || locations.value[0].cityId === -1){
             console.log("No Company Name / Address / locations")
             return
         }
@@ -105,7 +145,7 @@
 <template>
     <div class="min-h-screen flex flex-col text-black bg-cyan-100 box-border">
         <HeaderX/>
-        <div class="flex-grow flex flex-row justify-center items-center gap-5">
+        <div v-if="cities.length !== 0" class="flex-grow flex flex-row justify-center items-center gap-5">
             <form @submit.prevent="handleRegisterSubmit" class="flex flex-col p-5 gap-3 bg-blue-200 rounded-2xl">
                 <label>Username</label>
                 <input type="text" class="bg-white" name="username" v-model="username" > 
@@ -147,11 +187,12 @@
                     <label>Address:</label>
                     <input v-model="location.address" type="text"  class="bg-white" placeholder="Enter address" />
 
-                    <label>Status:</label>
-                    <select v-model="location.status" class="bg-white">
-                        <option value="open">Open</option>
-                        <option value="close">Close</option>
-                    </select>
+                    <label>City:</label>
+                    <select v-model="location.cityId">
+                        <option v-for="(city,index) in cities" :value="city.id" :key="index">{{ city.name }}</option>
+                    </select> 
+
+
 
 
                 </div>

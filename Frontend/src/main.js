@@ -17,7 +17,6 @@ app.component("v-icon", OhVueIcon);
 
 app.use(createPinia())
 app.use(router)
-
 app.use(VueQueryPlugin)
 
 app.mount('#app')

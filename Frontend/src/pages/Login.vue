@@ -5,6 +5,19 @@
     import { storeToRefs } from "pinia";
     import { useRouter } from "vue-router";
     import HeaderX from "../components/HeaderX.vue"
+    import { RouterView } from "vue-router";
+    import { onMounted } from "vue";
+    import { useQueryClient } from "@tanstack/vue-query";
+
+
+
+    const queryClient = useQueryClient()
+
+    onMounted(()=> {
+        queryClient.clear();
+    })
+
+
     const username = ref("");
     const password = ref("");
     const router = useRouter()

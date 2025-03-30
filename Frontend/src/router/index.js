@@ -47,6 +47,24 @@ const router = createRouter({
 
     },
     {
+      path: '/profile',
+      name: 'profile',
+      component: profile,
+      beforeEnter : async (to,from) => {
+
+        const authStore = useAuthStore();
+        await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
+        if (authStore.isLoggedIn === true  && authStore.isLoading === false){
+          console.log("did go to profile")
+          return true
+        }else{
+          console.log("did not go to profile")
+          return {name: 'login'}
+        }
+      }
+
+    },
+    {
       path: '/admin',
       name: 'admin',
       component: MainAdminPage,

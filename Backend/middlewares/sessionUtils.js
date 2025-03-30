@@ -31,4 +31,24 @@ const verifyRole = async (req, res, next) => {
     }
     // get userId, search database query, then get role then pu trole in req then next() pero no database yet
 }
-export {verifySessionToken, verifyRole}
+
+
+const verifyVehicle = async (req, res, next) => {
+    const {userId} = req;
+
+    try{
+        let result = await pool.query(queries.vehicle.getVehicleByUserIdQ, [userId]);
+
+        if (result.rowCount === 0){
+            return res.status(401).json({error: "No vehicle found, Unauthorized"});
+        }
+        req.vehicleId = result.rows[0].id;
+        next();
+    }catch(e){
+        console.log(e)
+        return res.status(401).json({error: "Unauthorized user"})
+    }
+}
+
+
+export {verifySessionToken, verifyRole, verifyVehicle}
