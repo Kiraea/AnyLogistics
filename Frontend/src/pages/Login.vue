@@ -55,17 +55,17 @@
 
 <template>
 
-    <div class="min-h-screen flex flex-col text-black bg-cyan-100 box-border">
+    <div class="min-h-screen flex flex-col text-black bg-blue-400 box-border">
         <HeaderX/>
         <div class="flex-grow flex flex-col justify-center items-center rounded-2xl">
-            <div class="bg-blue-200">
+            <div class="bg-white rounded-2xl">
                 <form class="p-5 flex flex-col gap-5" @submit.prevent="handleLogin">
                     <label>Username</label>
-                    <input type="text"  name="username" class="bg-white" v-model="username" > 
+                    <input type="text"  name="username" class="bg-white border-black border-2" v-model="username" > 
                     <label>Password</label>
-                    <input type="password" name="password" class="bg-white" v-model="password">
-                    <div>Don't have an account yet? <RouterLink to="/register" class="font-bold">Click Here!</RouterLink></div>
-                    <button type="submit" class="bg-white">Submit</button>
+                    <input type="password" name="password" class="bg-white border-black border-2" v-model="password">
+                    <div>Don't have an account yet? <RouterLink to="/register" class="font-bold bg-blue-300 p-2 rounded-2xl">Click Here!</RouterLink></div>
+                    <button type="submit" class="bg-white bg-blue">Submit</button>
                 </form>
             </div>
 
