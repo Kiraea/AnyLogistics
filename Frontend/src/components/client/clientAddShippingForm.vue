@@ -3,7 +3,6 @@
     import {useGetLocations, useAddShippingForm} from '../../Queries.js';
     import { Teleport } from 'vue';
     import { ref } from 'vue';
-
     import { defineEmits } from 'vue';
 
 
@@ -35,7 +34,7 @@
             console.log(item);
         }
 
-        if (weight.value < 1 || shippingTo.value === -1 || shippingFrom.value === -1 || inventory.value.length < 1){
+        if (weight.value < 1 || shippingTo.value === "" || shippingFrom.value === "" || inventory.value.length < 1){
             console.log("incomplete fields");
             return;
         }

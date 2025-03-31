@@ -32,6 +32,19 @@ router.post('/login', async (req,res)=> {
 
 })
 
+router.post('/logout', async (req,res)=> {
+
+    req.session.destroy(error => {
+        if (error) {
+            console.error("Session destruction failed:", error);
+            return res.status(500).json({ message: "Failed to logout" });
+        }
+
+        res.status(200).json({ message: "Logged out successfully" }); 
+    });
+
+})
+
 
 router.post('/register', async (req,res)=> {
     const {username, password, firstName, lastName, email, phoneNumber, companyId, companyName, locationsObj} = req.body;
@@ -231,20 +244,52 @@ router.patch(`/updateValidation`, async (req,res)=> {
 })
 
 
-router.get(`/getPublicInformationOfUser`, verifySessionToken, async (req,res)=> {
+router.get(`/getPublicInformationOfUser`, verifySessionToken, verifyRole, async (req,res)=> {
     const {userId} = req
+    const {companyId} = req
     console.log(userId);
-    try{
-        let result = await pool.query(queries.users.getPublicInformationOfUserQ, [userId]);
-        if (result.rowCount > 0){
-            res.status(200).json({status: "success", message: "succesfully gotten public information of user", data: result.rows})
-        }else{
-            res.status(200).json({status: "fail", message: "cant get user public", data: null})
-        }
-    }catch(e){
-        console.log(e)
-        res.status(500).json({status: "error", message: "Cannot get user public info due to server errors" })
-    }    
+    console.log(companyId);
+
+    if (companyId === 1){
+        try{
+            let result = await pool.query(queries.users.getPublicInformationOfAdminUserQ, [userId]);
+            if (result.rowCount > 0){
+                res.status(200).json({status: "success", message: "succesfully gotten public information of user", data: result.rows})
+            }else{
+                res.status(200).json({status: "fail", message: "cant get user public", data: null})
+            }
+        }catch(e){
+            console.log(e)
+            res.status(500).json({status: "error", message: "Cannot get user public info due to server errors" })
+        }   
+    }
+    else if (companyId === 2){
+        try{
+            let result = await pool.query(queries.users.getPublicInformationOfCourierUserQ, [userId]);
+            if (result.rowCount > 0){
+                res.status(200).json({status: "success", message: "succesfully gotten public information of user", data: result.rows})
+            }else{
+                res.status(200).json({status: "fail", message: "cant get user public", data: null})
+            }
+        }catch(e){
+            console.log(e)
+            res.status(500).json({status: "error", message: "Cannot get user public info due to server errors" })
+        }   
+    }
+    else if (companyId > 2){
+        try{
+            let result = await pool.query(queries.users.getPublicInformationOfClientUserQ, [userId]);
+            if (result.rowCount > 0){
+                res.status(200).json({status: "success", message: "succesfully gotten public information of user", data: result.rows})
+            }else{
+                res.status(200).json({status: "fail", message: "cant get user public", data: null})
+            }
+        }catch(e){
+            console.log(e)
+            res.status(500).json({status: "error", message: "Cannot get user public info due to server errors" })
+        }   
+    }
+ 
 })
 
 router.patch('/updateEmailAndPhone', verifySessionToken, async (req,res) => {

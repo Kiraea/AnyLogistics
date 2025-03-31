@@ -1,5 +1,6 @@
 <script setup>
 import { useGetLocations } from '@/Queries';
+import { Icon } from "@iconify/vue";
     const {data: locationsData = [], isLoading: locationsIsLoading, isError: locationsIsError, error: locationsError} = useGetLocations();
 
     if (!locationsIsLoading){
@@ -10,10 +11,10 @@ import { useGetLocations } from '@/Queries';
 
 <template>
     <div class="grid grid-cols-4 gap-5">
-        <div v-for="location in locationsData" class="flex flex-col border-black border-2">
-            <span>Name: {{location.name}}</span>
-            <span>Address: {{location.address}}</span>
-            <span>City Name: {{location.city_name}}</span>
+        <div v-for="location in locationsData" class=" border-black  border-2">
+            <div class="flex items-center gap-2 bg-blue-400 justify-center">{{location.name}}</div>
+            <div class="flex items-center gap-2 ml-2"><Icon icon="famicons:home-outline"/> {{location.address}}</div>
+            <div class="flex items-center gap-2 ml-2"><Icon icon="mdi:home-city-outline"/> {{location.city_name}}</div>
         </div>
     </div>
 

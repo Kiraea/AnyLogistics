@@ -10,6 +10,33 @@ const queries = {
                         ON u.company_id = c.id
             WHERE u.id = $1;
         `,
+        getPublicInformationOfClientUserQ:`
+            SELECT u.first_name, u.last_name, c.name as company_name, u.email, u.phone_number, c.id
+            FROM users u LEFT JOIN companies c
+                        ON u.company_id = c.id
+            WHERE u.id = $1;
+        `,
+        getPublicInformationOfAdminUserQ:`
+            SELECT u.first_name, u.last_name, c.name as company_name, u.email, u.phone_number, c.id
+            FROM users u LEFT JOIN companies c
+                        ON u.company_id = c.id
+            WHERE u.id = $1;
+        `,
+        getPublicInformationOfCourierUserQ:`
+            SELECT u.first_name, u.last_name, c.name as company_name, u.email, u.phone_number, c.id AS company_id,
+            v.id AS vehicle_id, v.vehicle_type, v.max_capacity_kg, v.city_id AS vehicle_city_id, ci.name AS vehicle_city_name
+            FROM users u LEFT JOIN companies c
+                        ON u.company_id = c.id
+                        LEFT JOIN vehicles v
+                        ON u.id = v.user_id
+                        LEFT JOIN cities ci
+                        ON v.city_id = ci.id
+            WHERE u.id = $1;
+        `,
+
+
+
+
         getUserByIdQ: `
             SELECT u.*, c.name AS company_name
             FROM users u LEFT JOIN companies c
