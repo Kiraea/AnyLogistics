@@ -295,7 +295,6 @@ export const useGetShippingFormVehicleId = () => {
     })    
 }
 
-
 export const updateStatusForm = async ({formId, newStatus}) => {
     console.log("new status: ", newStatus);
     try {
@@ -326,5 +325,38 @@ export const useUpdateStatusForm = () => {
         }
     })
     return {useUpdateStatusFormAsync}
+
+}
+
+export const updateStatusFormInAdmin = async ({formId, newStatus}) => {
+    try {
+        let result = await axiosInstance.patch(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/updateSRF`, {
+            formId: formId,
+            newStatus: newStatus
+        })
+        if (result.status === 200){
+            console.log(result.data.message , "message");
+            return result.data.data            
+        }
+    }catch(e){
+        console.log(e);
+        if (e instanceof AxiosError){
+            console.log(e)
+        }
+    }    
+}
+
+export const useUpdateStatusFormInAdmin = () => {
+    const queryClient = useQueryClient()
+    const {mutateAsync: useUpdateStatusFormInAdminAsync } = useMutation({
+        mutationFn: updateStatusFormInAdmin,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleId']});
+            queryClient.invalidateQueries({queryKey: ['shippingForm']});
+            queryClient.invalidateQueries({queryKey: ['clientShippingForm']});
+            queryClient.invalidateQueries({queryKey: ['pendingShippingForm']});
+        }
+    })
+    return {useUpdateStatusFormInAdminAsync}
 
 }
