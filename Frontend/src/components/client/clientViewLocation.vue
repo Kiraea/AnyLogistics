@@ -1,7 +1,7 @@
 <script setup>
 import { useGetLocations } from '@/Queries';
 import { Icon } from "@iconify/vue";
-    const {data: locationsData, isLoading: locationsIsLoading, isError: locationsIsError, error: locationsError} = useGetLocations();
+    const {data: locationsData = [], isLoading: locationsIsLoading, isError: locationsIsError, error: locationsError} = useGetLocations();
 
     if (!locationsIsLoading){
         console.log(locationsData[0]);
