@@ -9,6 +9,8 @@ import AccountsHome from '@/pages/admin/accountsHome.vue'
 import UserList from '@/pages/admin/userList.vue'
 import ApproveUsers from '@/pages/admin/approveUsers.vue'
 import AdminCompanies from '@/pages/admin/companies.vue'
+import profile from '@/pages/profile.vue'
+import ApproveSRF from '@/pages/admin/approveSRF.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -101,6 +103,11 @@ const router = createRouter({
           component: AdminCompanies
         }
       ]
+    },
+    {
+      path: '/admin/approveSRFs',
+      name: 'approveSRF',
+      component: ApproveSRF
     },
     {
       path: '/client',

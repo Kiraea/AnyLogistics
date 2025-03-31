@@ -25,6 +25,26 @@ export const useGetUnverifiedUsers = () => {
     })
 }
 
+export const useGetAllUsers = () => { 
+    return useQuery({
+        queryKey: ['allUsers'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/getAllUsers`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                }
+            }
+        }
+
+    })
+}
 
 
 
@@ -138,6 +158,25 @@ export const useGetShippingForm = () => {
         queryFn: async () => {
             try{
                 let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/`)
+                if (result.status === 200){
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                }
+            }
+        }
+    })
+}
+
+export const useGetPendingShippingForm = () => {
+    return useQuery({
+        queryKey: ['pendingShippingForm'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/pending`)
                 if (result.status === 200){
                     console.log(result.data.message , "message");
                     return result.data.data

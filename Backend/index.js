@@ -59,7 +59,7 @@ const runBackend = async () => {
     database: process.env.DB_DATABASE,
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
+    port: process.env.DB_PORT,  
     ssl: false,
     max: 20, // set pool max size to 20
     idleTimeoutMillis: 1000, // close idle clients after 1 second

@@ -1,6 +1,6 @@
 <script setup>
 import { useGetLocations } from '@/Queries';
-    const {data: locationsData, isLoading: locationsIsLoading, isError: locationsIsError, error: locationsError} = useGetLocations();
+    const {data: locationsData = [], isLoading: locationsIsLoading, isError: locationsIsError, error: locationsError} = useGetLocations();
 
     if (!locationsIsLoading){
         console.log(locationsData[0]);

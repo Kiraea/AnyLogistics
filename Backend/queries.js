@@ -160,7 +160,11 @@ const queries = {
         SET vehicle_to_id = $1
         WHERE id = $2
         RETURNING *;
-    `
+        `,
+        getPendingShippingForm: `
+        SELECT s.*
+        FROM shipping_form s
+        WHERE s.status = $1`
 
     },
 
