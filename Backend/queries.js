@@ -191,9 +191,14 @@ const queries = {
         RETURNING *;
         `,
         getPendingShippingForm: `
-        SELECT s.*
-        FROM shipping_form s
-        WHERE s.status=$1`
+        SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') AS formatted_date, u.first_name AS first_name, u.last_name AS last_name, c.name AS company_name, l.name AS l_origin, lo.name AS lo_dest
+        FROM shipping_form s 
+        JOIN users u ON s.client_id = u.id
+        JOIN companies c ON u.company_id = c.id
+        JOIN locations l ON s.shipping_from = l.id
+        JOIN locations lo ON s.shipping_to = lo.id
+        WHERE s.status=$1
+        ORDER BY s.created_at ASC;`,
 
     },
 
