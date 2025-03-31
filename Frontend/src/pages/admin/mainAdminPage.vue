@@ -1,22 +1,31 @@
 <script setup>
-    import { useSetValidationUser } from '../../Queries';
-    import {useGetUnverifiedUsers} from '../../Queries';
-    const {data: unverifiedUsersData, isLoading: unverifiedUsersIsLoading , isError: unverifiedUsersIsError, error: unverifiedUsersError } = useGetUnverifiedUsers();
+import HeaderX from '@/components/HeaderX.vue';
+import { RouterLink } from 'vue-router';
 
-
-    const {useSetValidationUserAsync} = useSetValidationUser(); 
-
-    const updateUserValidation = async (userId, validationStatus) => {
-        await useSetValidationUserAsync({userId, validationStatus});
-    }
 </script>
 
+
 <template>
-    
-    <div class="min-h-screen">
-        <div v-for="user in unverifiedUsersData">
-            <span>{{ user.first_name }}</span>
-            <button @click="updateUserValidation(user.id, true)">Accept</button>
+    <div class="min-h-screen flex flex-col text-black bg-white box-border gap-5">
+        <HeaderX/>
+
+        <div class="flex-grow flex">
+            <div class="flex items-center justify-center flex-1/2">
+                <RouterLink to="/admin/shippingForms"><button class="rounded-2xl bg-blue-400 text-black p-4 font-bold text-6xl">Shipping Forms</button></RouterLink>
+            </div>
+
+
+            <div class="flex items-center justify-center flex-1/2">
+                <RouterLink to="/admin/accounts"> <button class="rounded-2xl bg-blue-400 text-black p-4 font-bold text-6xl">Accounts</button></RouterLink>
+            </div>
+
         </div>
+
+
+
     </div>
+
+
+
+
 </template>

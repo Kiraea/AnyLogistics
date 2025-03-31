@@ -1,6 +1,7 @@
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import error from './components/error.vue';
 
 //VueIcons
 import { OhVueIcon, addIcons } from "oh-vue-icons";
@@ -16,7 +17,9 @@ const app = createApp(App)
 app.component("v-icon", OhVueIcon);
 
 app.use(createPinia())
+
+
+
 app.use(router)
 app.use(VueQueryPlugin)
-
 app.mount('#app')

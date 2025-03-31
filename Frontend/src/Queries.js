@@ -3,6 +3,11 @@ import { axiosInstance } from "./AxiosInstance";
 import { useQuery } from "@tanstack/vue-query";
 import { useQueryClient } from "@tanstack/vue-query";
 import { useMutation } from "@tanstack/vue-query";
+import { useErrorStore } from "./stores/error";
+
+
+
+
 
 export const useGetUnverifiedUsers = () => { 
     return useQuery({
@@ -17,7 +22,8 @@ export const useGetUnverifiedUsers = () => {
             }
             }catch(e){
                 if (e instanceof AxiosError){
-                    console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
                 }
             }
         }
@@ -39,6 +45,8 @@ export const useGetAllUsers = () => {
             }catch(e){
                 if (e instanceof AxiosError){
                     console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
                 }
             }
         }
@@ -62,6 +70,8 @@ export const useGetClientShippingForm = () => {
             }catch(e){
                 if (e instanceof AxiosError){
                     console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
                 }
             }
         }
@@ -82,6 +92,8 @@ export const useGetLocations = () => {
             }catch(e){
                 if (e instanceof AxiosError){
                     console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
                 }
             }
         }
@@ -106,6 +118,8 @@ export const addlocation =  async ({name, address, cityId}) => {
         console.log(e);
         if (e instanceof AxiosError){
             console.log(e)
+            const errorStore = useErrorStore()
+            errorStore.errorMessage = e.response?.data?.message
         }
     }
 }
@@ -138,6 +152,8 @@ export const setValidationUser = async ({userId, validationStatus}) => {
             }
         } catch (error) {
             console.error("Error updating user validation:", error);
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
         }
     };
 
@@ -165,6 +181,8 @@ export const useGetShippingForm = () => {
             }catch(e){
                 if (e instanceof AxiosError){
                     console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
                 }
             }
         }
@@ -184,6 +202,8 @@ export const useGetPendingShippingForm = () => {
             }catch(e){
                 if (e instanceof AxiosError){
                     console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
                 }
             }
         }
@@ -207,6 +227,8 @@ export const addShippingForm =  async ({ weight,  inventory, shippingFrom, shipp
         console.log(e);
         if (e instanceof AxiosError){
             console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
         }
     }
 }
@@ -238,6 +260,8 @@ export const useGetUserPublicInformation= () => {
             }catch(e){
                 if (e instanceof AxiosError){
                     console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
                 }
             }
         }
@@ -259,6 +283,8 @@ export const updateUserPhoneAndEmail = async ({email, phoneNumber}) => {
         console.log(e);
         if (e instanceof AxiosError){
             console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
         }
     }    
 }
@@ -288,6 +314,8 @@ export const useGetShippingFormVehicleId = () => {
             }catch(e){
                 if (e instanceof AxiosError){
                     console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
                 }
             }
         }
@@ -311,6 +339,8 @@ export const updateStatusForm = async ({formId, newStatus}) => {
         console.log(e);
         if (e instanceof AxiosError){
             console.log(e)
+                    const errorStore = useErrorStore()
+            errorStore.errorMessage = e.response?.data?.message
         }
     }    
 }

@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/pages/Login.vue'
 import Register from '@/pages/Register.vue'
-import MainCourierPage from '@/pages/courier/mainCourierPage.vue'
-import MainAdminPage from '@/pages/admin/mainAdminPage.vue'
-import MainClientPage from '@/pages/client/mainClientPage.vue'
+import MainCourierPage from '@/pages/courier/MainCourierPage.vue'
+import MainClientPage from '@/pages/client/MainClientPage.vue'
 import { useAuthStore } from '@/stores/auth'
 import AccountsHome from '@/pages/admin/accountsHome.vue'
 import UserList from '@/pages/admin/userList.vue'
-import ApproveUsers from '@/pages/admin/approveUsers.vue'
 import AdminCompanies from '@/pages/admin/companies.vue'
 import profile from '@/pages/profile.vue'
-import ApproveSRF from '@/pages/admin/approveSRF.vue'
 import { useQueryClient } from '@tanstack/vue-query'
+import ApproveSRF from '@/pages/admin/approveSRF.vue'
+import ApproveUserPage from '@/pages/admin/ApproveUserPage.vue'
+import MainAdminPage from '@/pages/admin/MainAdminPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,7 +48,7 @@ const router = createRouter({
 
         const authStore = useAuthStore();
         await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
-        if (authStore.isLoggedIn === true && authStore.companyName=== "AnyLogisticsB" && authStore.isLoading === false){
+        if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsB" && authStore.isLoading === false){
           console.log(authStore.companyName);
           console.log("did go to client")
           return true
@@ -100,6 +100,20 @@ const router = createRouter({
       path: '/admin/accounts',
       name: 'adminAccounts',
       component: AccountsHome,
+      beforeEnter : async (to,from) => {
+
+        const authStore = useAuthStore();
+        await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
+
+        if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
+          console.log(authStore.companyName);
+          console.log("did go to client")
+          return true
+        }else{
+          console.log("did not go to client")
+          return {name: 'login'}
+        }
+      },
       children: [
         {
           path: 'viewAccounts',
@@ -107,7 +121,7 @@ const router = createRouter({
         },
         {
           path: 'approveAccounts',
-          component: ApproveUsers
+          component: ApproveUserPage, 
         },
         {
           path: 'companies',
@@ -118,7 +132,40 @@ const router = createRouter({
     {
       path: '/admin/approveSRFs',
       name: 'approveSRF',
-      component: ApproveSRF
+      component: ApproveSRF,
+      beforeEnter : async (to,from) => {
+
+        const authStore = useAuthStore();
+        await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
+
+        if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
+          console.log(authStore.companyName);
+          console.log("did go to client")
+          return true
+        }else{
+          console.log("did not go to client")
+          return {name: 'login'}
+        }
+      },
+    },
+    {
+      path: '/admin/approveUsers',
+      name: 'approveSRF',
+      component: ApproveSRF,
+      beforeEnter : async (to,from) => {
+
+        const authStore = useAuthStore();
+        await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
+
+        if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
+          console.log(authStore.companyName);
+          console.log("did go to client")
+          return true
+        }else{
+          console.log("did not go to client")
+          return {name: 'login'}
+        }
+      },
     },
     {
       path: '/client',

@@ -58,8 +58,10 @@ const queries = {
             WHERE u.username = $1;
         `,
         getUnverifiedUsersQ:`
-            SELECT u.*
+            SELECT u.*, c.name as company_name, c.id as company_id
             FROM users u
+                LEFT JOIN companies c
+                ON u.company_id = c.id
             WHERE is_validated = false
         `,
         updateVerificationUserQ:`

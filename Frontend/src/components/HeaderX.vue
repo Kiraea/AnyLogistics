@@ -31,7 +31,7 @@
                 }
             }
     }
-
+    console.log(isLoggedIn.value, "ISLOGGEDIN?");
     if (isLoggedIn.value){
         getPublicInfoOfUser()
     }

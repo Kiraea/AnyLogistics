@@ -11,7 +11,7 @@
 </script>
 
 <template>
-    <body class="bg-white grow min-h-screen px-8">
+    <body class="bg-white grow min-h-screen flex flex-col gap-5">
 
 <!--Navigation button divs-->
         <div name="subcategories" class="bg-blue-300 w-fit h-fit rounded-b-xl p-2 flex flex-row">

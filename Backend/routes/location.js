@@ -2,6 +2,7 @@ import express from 'express'
 import { queries } from '../queries.js';
 
 import { pool } from '../index.js';
+                
 import { verifyRole, verifySessionToken } from '../middlewares/sessionUtils.js';
 let router = express.Router()
 

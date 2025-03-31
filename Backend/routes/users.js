@@ -92,6 +92,7 @@ router.post('/register', async (req,res)=> {
     }
 
     let userId;
+
     try {
         const hashedPassword = await argon.hash(password);
             let userResult;
@@ -102,8 +103,8 @@ router.post('/register', async (req,res)=> {
 
             userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, true, newCompanyId]);
         }
-        if (companyId === 3){
-            userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, true, newCompanyId]);
+        if (companyId > 2){
+            userResult = await pool.query(queries.users.registerQ, [username, hashedPassword, firstName, lastName, email, phoneNumber, false, newCompanyId]);
         }
 
         if (userResult.rowCount === 0) {

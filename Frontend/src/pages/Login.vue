@@ -8,6 +8,11 @@
     import { RouterView } from "vue-router";
     import { onMounted } from "vue";
     import { useQueryClient } from "@tanstack/vue-query";
+    import error from "@/components/error.vue";
+    import { useErrorStore } from "@/stores/error";
+
+    const store = useErrorStore()
+    const { errorMessage } = storeToRefs(store)
 
 
 
@@ -46,7 +51,7 @@
                 }
             }
         }catch(e){
-            console.log(e);
+            errorMessage.value = e.response?.data?.message;
         }
 
     }
@@ -70,7 +75,7 @@
             </div>
 
         </div>
-
+        <error/>
     </div>
 
     

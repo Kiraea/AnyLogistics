@@ -1,10 +1,13 @@
 <script setup>
-
     import {useGetLocations, useAddShippingForm} from '../../Queries.js';
     import { Teleport } from 'vue';
     import { ref } from 'vue';
     import { defineEmits } from 'vue';
-
+    import { useErrorStore } from '@/stores/error.js';
+    import { storeToRefs } from 'pinia';
+    const errorStore = useErrorStore()
+    const {errorMessage } = storeToRefs(errorStore)
+    import error from '../error.vue';
 
     const props = defineProps({isOpen: Boolean})
     const emit = defineEmits(['close']);
@@ -35,7 +38,7 @@
         }
 
         if (weight.value < 1 || shippingTo.value === "" || shippingFrom.value === "" || inventory.value.length < 1){
-            console.log("incomplete fields");
+            errorStore.$patch({errorMessage: "incomplete fields" })
             return;
         }
         console.log('ABC');
@@ -78,5 +81,6 @@
                     </form>
                 </div>
             </div>
+            <error/>
         </Teleport>
 </template>

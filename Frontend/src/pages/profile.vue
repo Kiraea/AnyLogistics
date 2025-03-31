@@ -87,7 +87,8 @@ const handleBackLogic = () => {
         </div>
 
         <!-- put code if  admin-->
-        <div v-if="authStore.companyName === 'AnyLogisticsA'" class="gap-5 flex flex-col p-5 ">
+        <div v-if="authStore.companyName === 'AnyLogisticsA'" class="gap-5 flex flex-col p-5 bg-blue-300 mx-5">
+
             <span>Role: Admin</span>
             <span></span>
             <span></span>
@@ -103,7 +104,7 @@ const handleBackLogic = () => {
         </div>
 
         <!-- put code if  client-->
-        <div v-if="authStore.companyName !== 'AnyLogisticsA' && authStore.companyName !== 'AnyLogisticsB'" class="gap-5 flex flex-col p-5 ">
+        <div v-if="authStore.companyName !== 'AnyLogisticsA' && authStore.companyName !== 'AnyLogisticsB'" class="gap-5 flex flex-col p-5 bg-blue-300 mx-5 rounded-2xl">
             <span>Role: Client</span>
 
         </div>

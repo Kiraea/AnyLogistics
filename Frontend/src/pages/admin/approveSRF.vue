@@ -2,7 +2,7 @@
     import HeaderX from "../../components/HeaderX.vue";
     import { useGetPendingShippingForm } from "@/Queries";
     const {data: srfData = [], isLoading:userIsLoading, isError: userIsError, error: userError} = useGetPendingShippingForm();
-    console.log(srfData)
+    console.log(srfData, "dsad");
 </script>
 
 <template>
