@@ -5,6 +5,8 @@
     import { AxiosError } from 'axios';
     import { ref } from 'vue';
     import { RouterLink } from 'vue-router';
+    import { Icon } from '@iconify/vue';
+    import { useRouter } from 'vue-router';
     const authStore = useAuthStore()
     const {isLoggedIn} = storeToRefs(authStore)
 
@@ -12,7 +14,7 @@
     let firstName = ref("");
     let lastName = ref("");
 
-
+    const router = useRouter()
 
     const getPublicInfoOfUser = async () => {
         try{
@@ -30,23 +32,46 @@
             }
     }
 
-
-
-
-
     if (isLoggedIn.value){
         getPublicInfoOfUser()
     }
 
+
+    const handleLogout = async () => {
+    try {
+        await axiosInstance.post('/users/logout');
+
+
+        authStore.$patch({
+            isLoggedIn: false,
+            isLoading: false,
+            companyName: null
+        });
+
+
+        router.replace('/login');
+    } catch (error) {
+        console.error("Logout failed:", error);
+    }
+};
+
 </script>
 
 <template>
-    <header class="w-full bg-blue-700 text-black flex p-5 justify-between">
+    <header class="w-full bg-blue-700 text-black flex p-2 justify-between items-center">
+
         <span class="text-3xl font-bold text-white">Any<span class="text-white">Logistics</span></span>
-            <div v-if="isLoggedIn" class="font-bold text-white">
-                Welcome {{ firstName }}, {{ lastName }}
-                <RouterLink to="/profile"> <button>Profile</button> </RouterLink>
-            </div>
+
+        <div v-if="isLoggedIn" class="items-center flex flex-col"> 
+            <RouterLink class="flex flex-col items-center"to="/profile"> 
+                <Icon icon="mingcute:user-4-line" style="width: 50px; height: 50px; color:white;"/>
+                <span class="font-bold text-white text-md">Welcome: {{ firstName }}</span>
+            </RouterLink>
+             <button @click="handleLogout" class="font-semibold text-sm bg-blue-400 p-[5px] rounded-2xl">Logout</button>
+        </div>
+
+
+
     </header>
 
 

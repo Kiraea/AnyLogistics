@@ -7,6 +7,7 @@ import MainClientPage from '@/pages/client/MainClientPage.vue'
 import { useAuthStore } from '@/stores/auth'
 import AccountsHome from '@/pages/admin/accountsHome.vue'
 import profile from '@/pages/profile.vue'
+import { useQueryClient } from '@tanstack/vue-query'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +15,12 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: Register
+      component: Register,
+      beforeEnter: async (to,from) => {
+        const queryClient = useQueryClient()
+        queryClient.clear();
+
+      }
 
     },
     {
@@ -23,7 +29,12 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: Login 
+      component: Login,
+      beforeEnter: async (to,from) => {
+        const queryClient = useQueryClient()
+        queryClient.clear();
+
+      }
     },
     {
       path: '/courier',

@@ -143,36 +143,38 @@
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col text-black bg-cyan-100 box-border">
+    <div class="min-h-screen flex flex-col text-black bg-blue-400 box-border">
         <HeaderX/>
         <div v-if="cities.length !== 0" class="flex-grow flex flex-row justify-center items-center gap-5">
-            <form @submit.prevent="handleRegisterSubmit" class="flex flex-col p-5 gap-3 bg-blue-200 rounded-2xl">
+            <form @submit.prevent="handleRegisterSubmit" class="flex flex-col p-5 gap-3 bg-white rounded-2xl">
                 <label>Username</label>
-                <input type="text" class="bg-white" name="username" v-model="username" > 
+                <input type="text" class="bg-white border-[1px]" name="username" v-model="username" > 
                 <label>Password</label>
-                <input type="password" class="bg-white" name="password" v-model="password"> 
+                <input type="password" class="bg-white border-[1px]" name="password" v-model="password"> 
 
 
                 <label>Firstname</label>
-                <input type="text" class="bg-white"  name="firstName" v-model="firstName" > 
+                <input type="text" class="bg-white border-[1px]"  name="firstName" v-model="firstName" > 
                 <label>Lastname</label>
-                <input type="text"  class="bg-white" name="lastName" v-model="lastName"> 
+                <input type="text"  class="bg-white border-[1px]" name="lastName" v-model="lastName"> 
 
                 <label>email</label>
-                <input type="text" class="bg-white" name="email" v-model="email" > 
+                <input type="text" class="bg-white border-[1px]" name="email" v-model="email" > 
                 <label>phoneNumber</label>
-                <input type="text"  class="bg-white" name="phoneNumber" v-model="phoneNumber"> 
+                <input type="text"  class="bg-white border-[1px]" name="phoneNumber" v-model="phoneNumber"> 
 
 
-                <select v-model="companyId" class="bg-purple-100">
+                <select v-model="companyId" class="bg-white border-[1px]">
                     <option  :value=1>Admin</option>
                     <option  :value=2>Courier</option>
                     <option  :value=3>Client</option>
                 </select>
 
-                <button type="submit" class="bg-white">Submit</button>
-
                 <div>Already have an account? <RouterLink to="/login" class="font-bold">Click Here!</RouterLink></div>
+                <div class="flex flex-col">
+                    <button type="submit" class="bg-blue-400 p-2 rounded-2xl">Submit</button>
+                </div>
+
             </form>
             <div class="flex flex-col p-3 gap-3 bg-blue-200 rounded-2xl" v-if="companyId === 3">
                 <div class="flex flex-col"> <!-- 1 means client-->

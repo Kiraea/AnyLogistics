@@ -27,7 +27,7 @@
     const { setCompanyName , setIsLoading, setIsLoggedIn } = authStore; // cause functions
     const handleLogin = async () => { 
         try{
-            let result = await axiosInstance.post(`/users/login`, {
+            let result = await axiosInstance.post(`http://localhost:3000/api/users/login`, {
                 username: username.value,
                 password: password.value
             });
@@ -61,11 +61,11 @@
             <div class="bg-white rounded-2xl">
                 <form class="p-5 flex flex-col gap-5" @submit.prevent="handleLogin">
                     <label>Username</label>
-                    <input type="text"  name="username" class="bg-white border-black border-2" v-model="username" > 
+                    <input type="text"  name="username" class="bg-white border-black border-[1px]" v-model="username" > 
                     <label>Password</label>
-                    <input type="password" name="password" class="bg-white border-black border-2" v-model="password">
+                    <input type="password" name="password" class="bg-white border-black border-[1px]" v-model="password">
                     <div>Don't have an account yet? <RouterLink to="/register" class="font-bold bg-blue-300 p-2 rounded-2xl">Click Here!</RouterLink></div>
-                    <button type="submit" class="bg-white bg-blue">Submit</button>
+                    <button type="submit" class="bg-blue-400 p-2 rounded-2xl">Submit</button>
                 </form>
             </div>
 
