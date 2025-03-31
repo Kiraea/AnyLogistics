@@ -51,7 +51,7 @@ router.get('/', verifySessionToken, verifyRole, async (req,res)=> {
 
 router.get('/pending', verifySessionToken, verifyRole, async (req,res)=> {
     try{
-        let result = await pool.query(queries.shippingForm.getShippingFormQ);
+        let result = await pool.query(queries.shippingForm.getPendingShippingForm, ['pending']);
         if (result.rowCount > 0){
             res.status(200).json({status: "success", message: "succesfully get shipping form", data: result.rows})
         }else{

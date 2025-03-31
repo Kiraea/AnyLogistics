@@ -121,7 +121,7 @@ const runBackend = async () => {
 //dasdasdsa
 const setupDatabase = async (pool) => {
 
-
+/** 
   await pool.query(`DROP TABLE IF EXISTS shipping_form CASCADE`);
   await pool.query(`DROP TABLE IF EXISTS locations CASCADE;`);
   await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
@@ -137,7 +137,7 @@ const setupDatabase = async (pool) => {
   await pool.query(`DROP TYPE IF EXISTS vehicle_type_enum CASCADE`); 
   await pool.query(`DROP TYPE IF EXISTS vehicle_status_enum CASCADE`); 
 
-    
+    */
 
 
   // await pool.query(`CREATE TYPE location_status_enum as ENUM('open', 'close');`);
@@ -145,7 +145,7 @@ const setupDatabase = async (pool) => {
   // await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
 
 
-  await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'traveling to sortation', 'waiting', 'cancelled', 'traveing to destination', 'finished');`);
+  //await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'traveling to sortation', 'waiting', 'cancelled', 'traveing to destination', 'finished');`);
   
 
 

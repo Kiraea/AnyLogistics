@@ -68,7 +68,7 @@
                             <option v-for="location in locationsData" :key="location.id" :value="location.id">{{ location.name }}</option>
                         </select>
 
-                        <label>Shipping From</label>
+                        <label>Shipping To</label>
                         <!--  SHOULD CHANGE THE SELECT HERE to get the location data value and use it as an option-->
                         <select v-model="shippingFrom" class="border-black border-2 rounded-2xl p-2">
                             <option v-for="location in locationsData" :key="location.id" :value="location.id">{{ location.name }}</option>

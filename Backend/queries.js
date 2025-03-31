@@ -191,7 +191,7 @@ const queries = {
         getPendingShippingForm: `
         SELECT s.*
         FROM shipping_form s
-        WHERE s.status = $1`
+        WHERE s.status=$1`
 
     },
 

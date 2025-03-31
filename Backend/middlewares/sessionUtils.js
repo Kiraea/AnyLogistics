@@ -3,10 +3,8 @@ import { queries } from "../queries.js";
 
 const verifySessionToken = (req, res, next) => {
     const userSessionObject = req.session?.userSessionObject;
-    if (userSessionObject !== null && userSessionObject.id != null){
-        req.userId = userSessionObject.id;
-
-        console.log(req.id);
+    if (userSessionObject !== null && userSessionObject.userId != null){
+        req.userId = userSessionObject.userId;
         next()
     }else{
         return res.status(401).json({error: "Unauthorized user"})

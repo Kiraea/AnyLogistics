@@ -1,11 +1,12 @@
 <script setup>
     import HeaderX from "../../components/HeaderX.vue";
-    import AdminNav from '@/components/AdminNav.vue';
+    import { useGetPendingShippingForm } from "@/Queries";
+    const {data: srfData = [], isLoading:userIsLoading, isError: userIsError, error: userError} = useGetPendingShippingForm();
+    console.log(srfData)
 </script>
 
 <template>
     <HeaderX/>
-    <h1> approve srf !</h1>
     <div class="py-8">
 
         <table class="w-full text-sm text-left rtl:text-right table-auto border border-gray-300">
@@ -21,11 +22,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="user in users" :key="user.id" class="border-b border-gray-300">
-                    <td class="px-6 py-3 border border-gray-500">{{ user.username }}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ user.company_id }}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ user.company_id }}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ user.email }}</td>
+                <tr v-for="srf in srfData" :key="user.id" class="border-b border-gray-300">
+                    <td class="px-6 py-3 border border-gray-500">{{ srf.client_id }}</td>
+                    <td class="px-6 py-3 border border-gray-500">{{ srf.shipping_from }}</td>
+                    <td class="px-6 py-3 border border-gray-500">{{ srf.shipping_to }}</td>
+                    <td class="px-6 py-3 border border-gray-500">{{ srf.inventory }}</td>
+                    <td class="px-6 py-3 border border-gray-500">{{ srf.client_id }}</td>
+                    <td class="px-6 py-3 border border-gray-500">{{ srf.created_at}}</td>
                 </tr>
             </tbody>
         </table>
