@@ -5,10 +5,11 @@ import { pool } from '../index.js';
 let router = express.Router()
 
 // lets say accepted
-router.post(`/updateStatusAndAssignToQualifiedDriver`, async (req, res)=> {
+router.post(`/updateAssignToQualifiedDriver`, async (req, res)=> {
 
-    const {statusApproval, shippingFormId} = req.body
-    let SRF;
+    const {formId} = req.body
+    console.log(formId)
+    /*
     try{
         SRF = await pool.query(queries.shippingForm.updateShippingFormApproval, [statusApproval, shippingFormId]);
 
@@ -26,30 +27,36 @@ router.post(`/updateStatusAndAssignToQualifiedDriver`, async (req, res)=> {
     if (SRF.rows[0].status === "declined"){
         return res.status(403).json({status: "failed", message: "admin declined succesfully", data: null})
     }
+    */
 
+    let SRF;
+    try {
+        SRF = await pool.query(queries.shippingForm.getShippingFormById, [formId]);
+    } catch(e) {
+        console.log(e) 
+        return res.status(403).json({status: "success", message: "did not update due to server error", data: null})
+    }
     let SRFWeight = SRF.rows[0].weight; // wait of the SRF cause we would need it for like finding trucks logic capacity thingy
     let SRFId = SRF.rows[0].id; // wait of the SRF cause we would need it for like finding trucks logic capacity thingy
-
 
     // logic below is for getting the city of  the "from" and "to"  of  a shipping form
     // but in this case it would only use the from since assining palang meaning driver would only deliver until sotration center
 
     let SRFCity; // shipping request form but with the city
     try{
-        SRFCity = await pool.query(queries.shippingForm.getShippingFormQIncludingLocationAndCityOfToAndFrom, [statusApproval, shippingFormId])
+        SRFCity = await pool.query(queries.shippingForm.getShippingFormQIncludingLocationAndCityOfToAndFrom)
     }catch(e){
         console.log(e)
         return res.status(403).json({status: "failed", message: "could not get shipping to and from city due to server err", data: null})
     }
 
-
     let from_city_id = SRFCity.rows[0].from_city_id;
-
-
+    console.log("city:" + from_city_id)
+    console.log(SRFWeight)
     // logic below is logic for finding a qualified vehicle to be place in SRF
     let qualifiedVehicle;
     try{
-        qualifiedVehicle = await pool.query(queries.vehicle.getAvailableVehicleForSRFQByCapacityAndCity, [from_city_id, SRFWeight])
+        qualifiedVehicle = await pool.query(queries.vehicle.getAvailableVehicleForSRFQByCapacityAndCity, [parseInt(from_city_id), parseInt(SRFWeight)])
     }catch(e){
         console.log(e)
         return res.status(403).json({status: "failed", message: "error in finding free vehicles server error", data: null})
@@ -64,7 +71,7 @@ router.post(`/updateStatusAndAssignToQualifiedDriver`, async (req, res)=> {
     // set SRF to have FK of the qualifiedVehicle
 
     try{
-        let result = await pool.query(queries.shippingForm.updateShippingFormToAVehicleId, [qualifiedVehicle, SRFId]);
+        let result = await pool.query(queries.shippingForm.updateShippingFormToAVehicleId, [qualifiedVehicleId, SRFId]);
         if( result.rowCount > 0){
             return res.status(403).json({status: "success", message: "sucesfully connected to a vehicle Id", data: null})
         }

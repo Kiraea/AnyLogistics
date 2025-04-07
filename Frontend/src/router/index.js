@@ -150,8 +150,8 @@ const router = createRouter({
     },
     {
       path: '/admin/approveUsers',
-      name: 'approveSRF',
-      component: ApproveSRF,
+      name: 'approveUsers',
+      component: ApproveUserPage,
       beforeEnter : async (to,from) => {
 
         const authStore = useAuthStore();

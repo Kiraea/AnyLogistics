@@ -95,11 +95,13 @@ const runBackend = async () => {
   const { router: shippingFormRoutes } = await import('./routes/SRF.js');
   const { router: locationRoutes } = await import('./routes/location.js');
   const { router: cityRoutes} = await import('./routes/city.js');
+  const { router: assignRoutes} = await import('./routes/assign.js');
   app.use('/api/users', userRoutes);
   app.use('/api/shippingForm', shippingFormRoutes); 
   app.use('/api/test', testRoutes); 
   app.use('/api/location', locationRoutes); 
   app.use('/api/city', cityRoutes); 
+  app.use('/api/assign', assignRoutes);
 
 
 

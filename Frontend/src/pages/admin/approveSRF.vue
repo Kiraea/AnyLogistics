@@ -2,15 +2,18 @@
     import HeaderX from "../../components/HeaderX.vue";
     import { useGetPendingShippingForm } from "@/Queries";
     import { useUpdateStatusFormInAdmin } from "@/Queries";
+    import { useUpdateVehicleAssignment } from "@/Queries";
     const {data: srfData = [], isLoading:userIsLoading, isError: userIsError, error: userError} = useGetPendingShippingForm();
     console.log(srfData, "dsad");
     const {useUpdateStatusFormInAdminAsync} = useUpdateStatusFormInAdmin()
+    const {useUpdateVehicleAssignmentAsync} = useUpdateVehicleAssignment()
+
 
     async function updateStatus(formId, newStatus){
         await useUpdateStatusFormInAdminAsync({formId: formId, newStatus: newStatus})
 
         if (newStatus === 'ready for pickup'){
-            //call another js function
+            await useUpdateVehicleAssignmentAsync({formId: formId})
         }
     }
 </script>

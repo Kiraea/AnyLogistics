@@ -121,10 +121,10 @@ const queries = {
             SELECT v.id, v.max_capacity_kg, COALESCE(SUM(s.weight), 0) AS current_capacity,
             (v.max_capacity_kg - COALESCE(SUM(s.weight), 0)) as available_space
             FROM vehicles v LEFT JOIN shipping_form s
-                        ON v.id = s.vehicle_id
+                        ON v.id = s.vehicle_from_id
             WHERE v.city_id = $1
             GROUP BY v.id, v.max_capacity_kg
-            HAVING (v.max_capacity_kg - COALESCE(SUM(s.weight), 0)) > $2
+            HAVING (v.max_capacity_kg - COALESCE(SUM(s.weight), 0)) >= $2
             LIMIT 1;
         `
     },
@@ -199,6 +199,10 @@ const queries = {
         JOIN locations lo ON s.shipping_to = lo.id
         WHERE s.status=$1
         ORDER BY s.created_at ASC;`,
+        getShippingFormById: `
+        SELECT s.*
+        FROM shipping_form s
+        WHERE s.id=$1;`,
 
     },
 

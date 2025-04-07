@@ -11,7 +11,7 @@ import { RouterLink } from 'vue-router';
 
         <div class="flex-grow flex">
             <div class="flex items-center justify-center flex-1/2">
-                <RouterLink to="/admin/shippingForms"><button class="rounded-2xl bg-blue-400 text-black p-4 font-bold text-6xl">Shipping Forms</button></RouterLink>
+                <RouterLink to="/admin/approveSRFs"><button class="rounded-2xl bg-blue-400 text-black p-4 font-bold text-6xl">Shipping Forms</button></RouterLink>
             </div>
 
 

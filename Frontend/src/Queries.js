@@ -358,6 +358,41 @@ export const useUpdateStatusForm = () => {
 
 }
 
+export const updateVehicleAssignment = async ({formId}) => {
+    try {
+        let result = await axiosInstance.post(`${import.meta.env.VITE_BASE_URL_LINK}/assign/updateAssignToQualifiedDriver`, {     
+            formId: formId
+        })
+        if (result.status === 200){
+            console.log(result.data.message , "message");
+            return result.data.data            
+        }
+    }catch(e){
+        console.log(e);
+        if (e instanceof AxiosError){
+            console.log(e)
+                    const errorStore = useErrorStore()
+            errorStore.errorMessage = e.response?.data?.message
+        }
+    }    
+}
+
+export const useUpdateVehicleAssignment = () => {
+    const queryClient = useQueryClient()
+    const {mutateAsync: useUpdateVehicleAssignmentAsync } = useMutation({
+        mutationFn: updateVehicleAssignment,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleId']});
+            queryClient.invalidateQueries({queryKey: ['shippingForm']});
+            queryClient.invalidateQueries({queryKey: ['clientShippingForm']});
+        }
+    })
+    return {useUpdateVehicleAssignmentAsync}
+
+}
+
+
+
 export const updateStatusFormInAdmin = async ({formId, newStatus}) => {
     try {
         let result = await axiosInstance.patch(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/updateSRF`, {
