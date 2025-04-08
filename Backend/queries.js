@@ -81,8 +81,11 @@ const queries = {
     company: {
         createCompany: `
             INSERT INTO companies (name) VALUES ($1) RETURNING *;
-        `
-        
+        `,
+        getCompany:`
+            SELECT c.*
+            FROM companies c
+        `,
     },
     location: {
         createLocation: `
@@ -100,6 +103,12 @@ const queries = {
         `
     },
     vehicle: {
+        findFreeVehicleQ:`
+        SELECT v.*
+        FROM vehicles v
+        WHERE v.user_id IS NULL
+        LIMIT 1;
+        `,
         getUnassignedVehicleQ:`
             SELECT v.*
             FROM vehicles v
@@ -118,23 +127,108 @@ const queries = {
             LIMIT 1;
         `,
         getAvailableVehicleForSRFQByCapacityAndCity: `
-            SELECT v.id, v.max_capacity_kg, COALESCE(SUM(s.weight), 0) AS current_capacity,
-            (v.max_capacity_kg - COALESCE(SUM(s.weight), 0)) as available_space
-            FROM vehicles v LEFT JOIN shipping_form s
-                        ON v.id = s.vehicle_from_id
+            SELECT 
+                v.id, 
+                v.max_capacity_kg, 
+                COALESCE(SUM(
+                    CASE 
+                        -- Include weight for vehicle_from_id only if status is active
+                        WHEN v.id = s.vehicle_from_id 
+                            AND s.status NOT IN ('waiting', 'traveling to sortation', 'finished') 
+                            THEN s.weight
+                        -- Include weight for vehicle_to_id only if status is active
+                        WHEN v.id = s.vehicle_to_id 
+                            AND s.status NOT IN ('finished', 'ready for pickup', 'traveling to sortation', 'pending', 'declined') 
+                            THEN s.weight
+                        ELSE 0 
+                    END
+                ), 0) AS current_capacity,
+                (v.max_capacity_kg - COALESCE(SUM(
+                    CASE 
+                        WHEN v.id = s.vehicle_from_id AND s.status NOT IN ('waiting', 'traveling to sortation', 'finished') THEN s.weight
+                        WHEN v.id = s.vehicle_to_id AND s.status NOT IN ('finished', 'ready for pickup', 'traveling to sortation', 'pending', 'declined') THEN s.weight
+                        ELSE 0 
+                    END
+                ), 0)) AS available_space
+            FROM "AnyLogistics".vehicles v 
+            LEFT JOIN "AnyLogistics".shipping_form s
+                ON (v.id = s.vehicle_from_id OR v.id = s.vehicle_to_id) -- Fix: No status filter in ON clause
             WHERE v.city_id = $1
             GROUP BY v.id, v.max_capacity_kg
-            HAVING (v.max_capacity_kg - COALESCE(SUM(s.weight), 0)) >= $2
-            LIMIT 1;
+            HAVING (v.max_capacity_kg - COALESCE(SUM(
+                CASE 
+                    WHEN v.id = s.vehicle_from_id AND s.status NOT IN ('waiting', 'traveling to sortation', 'finished') THEN s.weight
+                    WHEN v.id = s.vehicle_to_id AND s.status NOT IN ('finished', 'ready for pickup', 'traveling to sortation', 'pending', 'declined') THEN s.weight
+                    ELSE 0 
+                END
+            ), 0)) >= $2
+            LIMIT 1; -- Adjust threshold as needed
+        `,
+        getAvailableVehicleForSRFQByCapacityAndCityTo: `
+            SELECT 
+                v.id, 
+                v.max_capacity_kg, 
+                COALESCE(SUM(
+                    CASE 
+                        -- Include weight for vehicle_from_id only if status is active
+                        WHEN v.id = s.vehicle_from_id 
+                            AND s.status NOT IN ('waiting', 'traveling to sortation', 'finished') 
+                            THEN s.weight
+                        -- Include weight for vehicle_to_id only if status is active
+                        WHEN v.id = s.vehicle_to_id 
+                            AND s.status NOT IN ('finished', 'ready for pickup', 'traveling to sortation', 'pending', 'declined') 
+                            THEN s.weight
+                        ELSE 0 
+                    END
+                ), 0) AS current_capacity,
+                (v.max_capacity_kg - COALESCE(SUM(
+                    CASE 
+                        WHEN v.id = s.vehicle_from_id AND s.status NOT IN ('waiting', 'traveling to sortation', 'finished') THEN s.weight
+                        WHEN v.id = s.vehicle_to_id AND s.status NOT IN ('finished', 'ready for pickup', 'traveling to sortation', 'pending', 'declined') THEN s.weight
+                        ELSE 0 
+                    END
+                ), 0)) AS available_space
+            FROM "AnyLogistics".vehicles v 
+            LEFT JOIN "AnyLogistics".shipping_form s
+                ON (v.id = s.vehicle_from_id OR v.id = s.vehicle_to_id) -- Fix: No status filter in ON clause
+            WHERE v.city_id = $1
+            GROUP BY v.id, v.max_capacity_kg
+            HAVING (v.max_capacity_kg - COALESCE(SUM(
+                CASE 
+                    WHEN v.id = s.vehicle_from_id AND s.status NOT IN ('waiting', 'traveling to sortation', 'finished') THEN s.weight
+                    WHEN v.id = s.vehicle_to_id AND s.status NOT IN ('finished', 'ready for pickup', 'traveling to sortation', 'pending', 'declined') THEN s.weight
+                    ELSE 0 
+                END
+            ), 0)) >= $2
+            LIMIT 1; -- Adjust threshold as needed
         `
     },
     shippingForm: {
         getShippingFormQ:`
-            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
+            SELECT s.*, 
+                TO_CHAR(s.created_at, 'Mon DD, YYYY') AS formatted_date,
+                COALESCE(TO_CHAR(s.finished_date, 'Mon DD, YYYY'), 'Not yet finished') AS formatted_finished_date,
+                c_from.name AS city_from_name,
+                c_to.name AS city_to_name,
+                l_from.address AS location_from_address,
+                l_to.address AS location_to_address,
+                u_from.last_name AS user_from_courier,
+                u_to.last_name AS user_to_courier,
+                u_client.last_name AS client
             FROM shipping_form s
+            LEFT JOIN vehicles v_from ON s.vehicle_from_id = v_from.id
+            LEFT JOIN vehicles v_to ON s.vehicle_to_id = v_to.id
+            LEFT JOIN users u_from ON v_from.user_id = u_from.id   
+            LEFT JOIN users u_to ON v_to.user_id = u_to.id         
+            LEFT JOIN locations l_from ON s.shipping_from = l_from.id
+            LEFT JOIN locations l_to ON s.shipping_to = l_to.id
+            LEFT JOIN cities c_from ON l_from.city_id = c_from.id
+            LEFT JOIN cities c_to ON l_to.city_id = c_to.id
+            LEFT JOIN users u_client ON s.client_id = u_client.id;
         `,
         getShippingFormQByUserIdQ:`
             SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate,
+            COALESCE(TO_CHAR(s.finished_date, 'Mon DD, YYYY'), 'Not yet finished') AS formatted_finished_date,
             c_from.name AS from_city_name,
             c_from.id AS from_city_id,
             c_to.name AS to_city_name,
@@ -156,9 +250,30 @@ const queries = {
             RETURNING *;
         `,
         getShippingFormByVehicleId:`
-            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formatted_date
             FROM shipping_form s
             WHERE s.vehicle_id = $1;        
+        `,
+        getShippingFormByVehicleIdFrom:`
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formatted_date
+            FROM shipping_form s
+            WHERE s.vehicle_from_id = $1
+            AND s.status IN ('pending', 'declined', 'ready for pickup', 'traveling to sortation');   
+        `,
+        getShippingFormByVehicleIdFinished:`
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formatted_date,
+            COALESCE(TO_CHAR(s.finished_date, 'Mon DD, YYYY'), 'Not yet finished') AS formatted_finished_date
+            FROM shipping_form s
+            WHERE s.status = 'finished'
+            AND (s.vehicle_from_id = $1 OR s.vehicle_to_id = $2);
+        `,
+
+        getShippingFormByVehicleIdTo:`
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
+            FROM shipping_form s
+            WHERE s.vehicle_to_id = $1
+            AND s.status IN ('traveling to destination','waiting');   
+            ;        
         `,
         updateShippingFormStatusById: `
             UPDATE shipping_form
@@ -203,6 +318,12 @@ const queries = {
         SELECT s.*
         FROM shipping_form s
         WHERE s.id=$1;`,
+
+        updateFinishedDate:`
+            UPDATE shipping_form
+            SET finished_date = $1
+            WHERE id = $2;
+        `
 
     },
 

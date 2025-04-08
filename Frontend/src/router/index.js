@@ -11,7 +11,7 @@ import profile from '@/pages/profile.vue'
 import { useQueryClient } from '@tanstack/vue-query'
 import ApproveSRF from '@/pages/admin/approveSRF.vue'
 import ApproveUserPage from '@/pages/admin/ApproveUserPage.vue'
-import MainAdminPage from '@/pages/admin/MainAdminPage.vue'
+import MainAdminPage from '@/pages/admin/mainAdminPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +20,17 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: Register,
+      beforeEnter: async (to,from) => {
+        const queryClient = useQueryClient()
+        queryClient.clear();
+
+      }
+
+    },
+    {
+      path: '/',
+      name: 'loginDefault',
+      component: Login,
       beforeEnter: async (to,from) => {
         const queryClient = useQueryClient()
         queryClient.clear();
@@ -82,10 +93,10 @@ const router = createRouter({
       name: 'admin',
       component: MainAdminPage,
       beforeEnter : async (to,from) => {
-
+        
         const authStore = useAuthStore();
         await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
-
+        console.log(authStore.isLoading, authStore.isLoggedIn, authStore.companyName);
         if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
           console.log(authStore.companyName);
           console.log("did go to client")
@@ -117,15 +128,57 @@ const router = createRouter({
       children: [
         {
           path: 'viewAccounts',
-          component: UserList
+          component: UserList,
+          beforeEnter : async (to,from) => {
+
+            const authStore = useAuthStore();
+            await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
+    
+            if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
+              console.log(authStore.companyName);
+              console.log("did go to client")
+              return true
+            }else{
+              console.log("did not go to client")
+              return {name: 'login'}
+            }
+          },          
         },
         {
           path: 'approveAccounts',
-          component: ApproveUserPage, 
+          component: ApproveUserPage,
+          beforeEnter : async (to,from) => {
+
+            const authStore = useAuthStore();
+            await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
+    
+            if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
+              console.log(authStore.companyName);
+              console.log("did go to client")
+              return true
+            }else{
+              console.log("did not go to client")
+              return {name: 'login'}
+            }
+          },
         },
         {
           path: 'companies',
-          component: AdminCompanies
+          component: AdminCompanies,
+          beforeEnter : async (to,from) => {
+
+            const authStore = useAuthStore();
+            await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
+    
+            if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
+              console.log(authStore.companyName);
+              console.log("did go to client")
+              return true
+            }else{
+              console.log("did not go to client")
+              return {name: 'login'}
+            }
+          },
         }
       ]
     },

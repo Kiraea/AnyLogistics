@@ -19,7 +19,7 @@ router.post('/login', async (req,res)=> {
                 req.session.userSessionObject = {userId: user.id, companyId: user.company_id};
                 res.status(200).json({status: "success", message: "succesfully login", data: {firstName: user.first_name, companyName: user.company_name}})
             }else{
-                res.status(401).json({status: "fail", message: "invalid password"});
+                res.status(401).json({status: "fail", message: "not verified by admin / invalid credentials"});
             }
         }else{
             res.status(401).json({status: "fail", message: "user not found"});
@@ -55,6 +55,22 @@ router.post('/register', async (req,res)=> {
         return res.status(400).json({ status: "fail", message: "Incomplete credentials" });
     }
     let newCompanyId = null;
+
+
+
+    // LOGIC TO CHECK IF THERES ANY AVAILABEL VEHICLE YET IF USER IS COURIER
+    console.log(companyId);
+    if (companyId === 2){
+        try{
+            let result = await pool.query(queries.vehicle.findFreeVehicleQ);
+            if (result.rowCount === 0){
+                return res.status(400).json({ status: "fail", message: "there is no available vehicle to ride on" });
+            }
+        }catch(e){
+            console.log(e)
+            return res.status(400).json({ status: "fail", message: "there is no available vehicle to ride on" });
+        }
+    }
 
 
     // if its 1 or 2 dont create
@@ -170,8 +186,13 @@ router.get('/', async (req,res)=> {
 
 router.post('/checkSessionToken', verifySessionToken, verifyRole, async (req,res) => {
 
-    let userId = req.id;
+    let userId = req.userId;
     let companyId = req.companyId;
+
+
+    console.log(userId)
+    console.log(companyId);
+
 
     if (!userId || !companyId){
         return res.status(402).json({status:"error", message:"cannot get session credentials"});

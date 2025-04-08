@@ -5,11 +5,17 @@
     import HeaderX from '../components/HeaderX.vue'
     import { RouterLink } from 'vue-router';
     import { onMounted } from "vue";
-
-
+    import { storeToRefs } from "pinia";
+    import { AxiosError } from "axios";
     // to remove all cache queries when visiting login /register
     import { useQueryClient } from "@tanstack/vue-query";
+    import error from "@/components/error.vue";
     const queryClient = useQueryClient()
+
+    import { useErrorStore } from "@/stores/error";
+
+    const store = useErrorStore()
+    const { errorMessage } = storeToRefs(store)
 
 
 
@@ -73,72 +79,73 @@
 
     const handleRegisterSubmit = async () => {
 
-    if (!username.value) {
-        console.log("No username provided")
-        return
-    }
-    if (!password.value) {
-        console.log("No password provided")
-        return
-    }
-    if (!firstName.value) {
-        console.log("No first name provided")
-        return
-    }
-    if (!lastName.value) {
-        console.log("No last name provided")
-        return
-    }
-    if (!email.value) {
-        console.log("No email provided")
-        return
-    }
-    if (!phoneNumber.value) {
-        console.log("No phone number provided")
-        return
-    }
-    if (!companyId.value) {
-        console.log("No companyId selected")
-        return
-    }
-    if (!companyName.value){
-        console.log("No companyName selected")
-    }
-
-    const userDetailsObj = {
-        username: username.value,
-        password: password.value,
-        companyId: companyId.value,
-        firstName: firstName.value,
-        lastName: lastName.value,
-        email: email.value,
-        phoneNumber: phoneNumber.value,
-        companyName: companyName.value,
-    };
-
-    console.log(locations.value[0].cityId);
-    if (companyId.value > 2) { // clients
-        if (!companyName.value || locations.value[0].name === "" || locations.value[0].cityId === -1){
-            console.log("No Company Name / Address / locations")
+        if (!username.value) {
+            console.log("No username provided")
             return
         }
-        userDetailsObj["locationsObj"] = locations.value
-    }
-
-    console.log(userDetailsObj);    
-    try {
-        const result = await axios.post('http://localhost:3000/api/users/register', userDetailsObj)
-        if (result.status === 200) {
-            console.log("Registration successful", result.data)
-            router.push('/login');
-
+        if (!password.value) {
+            console.log("No password provided")
+            return
         }
-    } catch (error) {
-        if (axios.isAxiosError(error)) {  // ✅ Check if error is from Axios
-            console.log("Error response data:", error.response?.data.message);
+        if (!firstName.value) {
+            console.log("No first name provided")
+            return
+        }
+        if (!lastName.value) {
+            console.log("No last name provided")
+            return
+        }
+        if (!email.value) {
+            console.log("No email provided")
+            return
+        }
+        if (!phoneNumber.value) {
+            console.log("No phone number provided")
+            return
+        }
+        if (!companyId.value) {
+            console.log("No companyId selected")
+            return
+        }
+        if (!companyName.value){
+            console.log("No companyName selected")
+        }
+
+        const userDetailsObj = {
+            username: username.value,
+            password: password.value,
+            companyId: companyId.value,
+            firstName: firstName.value,
+            lastName: lastName.value,
+            email: email.value,
+            phoneNumber: phoneNumber.value,
+            companyName: companyName.value,
+        };
+
+        console.log(locations.value[0].cityId);
+        if (companyId.value > 2) { // clients
+            if (!companyName.value || locations.value[0].name === "" || locations.value[0].cityId === -1){
+                console.log("No Company Name / Address / locations")
+                return
+            }
+            userDetailsObj["locationsObj"] = locations.value
+        }
+
+        console.log(userDetailsObj);    
+        try {
+            const result = await axios.post('http://localhost:3000/api/users/register', userDetailsObj)
+            if (result.status === 200) {
+                console.log("Registration successful", result.data)
+                router.push('/login');
+
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) { 
+                console.log("DSAD")
+                errorMessage.value = error.response?.data?.message || "BLACK";
+            }
         }
     }
-}
 
 </script>
 
@@ -203,5 +210,6 @@
             </div>
 
         </div>
+        <error></error>
     </div>
 </template>

@@ -3,11 +3,33 @@
     import { useGetPendingShippingForm } from "@/Queries";
     import { useUpdateStatusFormInAdmin } from "@/Queries";
     import { useUpdateVehicleAssignment } from "@/Queries";
+    import { filtersForSRF } from "@/filters";
+    import { ref } from "vue";
+    import { computed } from "vue";
+
+
+// THIS IS FOR FETCHI ALL SRF
+     import { useGetShippingForm} from '../../Queries';
+    const {data: shippingFormData = [], isLoading: shippingFormIsLoading , isError: shippingFormIsError, error: shippingFormError } = useGetShippingForm();
+// -----------------
+
+
+    let filter = ref("status");
+
+
+
     const {data: srfData = [], isLoading:userIsLoading, isError: userIsError, error: userError} = useGetPendingShippingForm();
-    console.log(srfData, "dsad");
     const {useUpdateStatusFormInAdminAsync} = useUpdateStatusFormInAdmin()
     const {useUpdateVehicleAssignmentAsync} = useUpdateVehicleAssignment()
 
+
+    const filteredSRFData = computed(() => {
+        if (!Array.isArray(shippingFormData.value)) return []; 
+        if ( shippingFormData.length === 0) return [];
+        return filtersForSRF(shippingFormData.value, filter.value);
+    });
+
+    console.log(filteredSRFData.value);
 
     async function updateStatus(formId, newStatus){
         await useUpdateStatusFormInAdminAsync({formId: formId, newStatus: newStatus})
@@ -56,7 +78,58 @@
             </tbody>
         </table>
 
+        <div class="font-bold text-4xl">All Shipping Forms</div>
 
+
+        <select v-model="filter">
+            <option value="requestor">requestor</option>
+            <option value="created_at">created_at</option>
+            <option value="status">status</option>
+        </select>
+
+        <table class="w-full border-collapse border border-black">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Requestor</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Weight</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Status </th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Inventory</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Created At</th>
+
+
+                    <th class="p-2  text-center  border border-gray-500">City From</th>
+                    <th class="p-2  text-center  border border-gray-500">City To</th>
+
+                    <th class="p-2  text-center  border border-gray-500">Location From</th>
+                    <th class="p-2  text-center  border border-gray-500">Location To</th>
+
+                    <th class="p-2  text-center  border border-gray-500">Courier Name (Delivery)</th>
+                    <th class="p-2  text-center  border border-gray-500">Courier Name (Pickup)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="eachSRF in filteredSRFData" :key="eachSRF.id" class=" border-black">
+                    <td class="p-2 text-center border border-gray-500">{{ eachSRF.client}}</td>
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.weight}}</td>
+                    <td class="p-2  text-center  border border-gray-500">{{ eachSRF.status}}</td>
+                    <td class="p-2 text-center border border-gray-500">
+                        <select >
+                            <option v-for="itemValue in eachSRF.inventory">{{ itemValue }}</option>
+                        </select>
+                    </td>
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.formatted_date}}</td>
+
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.city_from_name}}</td>
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.city_to_name}}</td>
+
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.location_from_address}}</td>
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.location_to_address}}</td>
+
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.user_to_courier}}</td>
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.user_from_courier}}</td>
+                </tr>
+            </tbody>
+        </table>
 
     </div>
 </template>

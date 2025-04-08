@@ -18,16 +18,18 @@
 </script>
 
 <template>
-
+   <!-- <li v-for="user in users" :key="user.id">{{ user.name }}</li> -->
+    <!--
     <div v-if="users.length > 0">
         <h2>Users List</h2>
         <ul>
-            <!-- <li v-for="user in users" :key="user.id">{{ user.name }}</li> -->
+         
              <li v-for="user in users" :key="user.id">{{ user.username }}</li>
         </ul>
     </div>
     <p v-else>Loading users...</p>
 
+    -->
     <div class="py-8">
         <div name="filters">
             <button class="mx-2">All</button>

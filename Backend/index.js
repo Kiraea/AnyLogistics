@@ -96,12 +96,16 @@ const runBackend = async () => {
   const { router: locationRoutes } = await import('./routes/location.js');
   const { router: cityRoutes} = await import('./routes/city.js');
   const { router: assignRoutes} = await import('./routes/assign.js');
+  const { router: companyRoutes} = await import('./routes/company.js');
+
+
   app.use('/api/users', userRoutes);
   app.use('/api/shippingForm', shippingFormRoutes); 
   app.use('/api/test', testRoutes); 
   app.use('/api/location', locationRoutes); 
   app.use('/api/city', cityRoutes); 
   app.use('/api/assign', assignRoutes);
+  app.use('/api/company', companyRoutes);
 
 
 
@@ -122,8 +126,7 @@ const runBackend = async () => {
 // ALL BACKEND CREATE COMMANDS
 //dasdasdsa
 const setupDatabase = async (pool) => {
-
-/** 
+  /*
   await pool.query(`DROP TABLE IF EXISTS shipping_form CASCADE`);
   await pool.query(`DROP TABLE IF EXISTS locations CASCADE;`);
   await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
@@ -131,26 +134,19 @@ const setupDatabase = async (pool) => {
   await pool.query(`DROP TABLE IF EXISTS vehicles CASCADE;`);
   await pool.query(`DROP TABLE IF EXISTS cities CASCADE;`);
 
-  
-
   await pool.query(`DROP TYPE IF EXISTS request_form_status_enum CASCADE`); 
   await pool.query(`DROP TYPE IF EXISTS request_form_status_approval_enum CASCADE`); 
   await pool.query(`DROP TYPE IF EXISTS location_status_enum CASCADE`); 
   await pool.query(`DROP TYPE IF EXISTS vehicle_type_enum CASCADE`); 
   await pool.query(`DROP TYPE IF EXISTS vehicle_status_enum CASCADE`); 
-
-    */
-
-
-  // await pool.query(`CREATE TYPE location_status_enum as ENUM('open', 'close');`);
-  // await pool.query(`CREATE TYPE vehicle_type_enum as ENUM('light', 'medium', 'heavy');`);
-  // await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
-
-
-  //await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'traveling to sortation', 'waiting', 'cancelled', 'traveing to destination', 'finished');`);
   
-
-
+  await pool.query(`CREATE TYPE location_status_enum as ENUM('open', 'close');`);
+  await pool.query(`CREATE TYPE vehicle_type_enum as ENUM('light', 'medium', 'heavy');`);
+  await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
+  await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'traveling to sortation', 'waiting', 'traveling to destination', 'finished');`);
+  */
+  
+ 
   // 1 same company but admin(logistic), 2 same compny(logistic) but rider, and 3-9999 is basically other companies 
   await pool.query(`CREATE TABLE IF NOT EXISTS companies (
     id SERIAL PRIMARY KEY,
@@ -213,18 +209,63 @@ const setupDatabase = async (pool) => {
     ON CONFLICT (name) DO NOTHING;`);
     
         
+
+
+    await pool.query(`
+     INSERT INTO users (username, password, first_name, last_name, email, phone_number, is_validated, company_id)
+    VALUES
+    ( 'user1', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Alice', 'Smith', 'alice1@example.com', '123-456-7890', TRUE, 2),
+    ( 'user2', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Bob', 'Johnson', 'bob2@example.com', '234-567-8901', TRUE, 2),
+    ( 'user3', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Charlie', 'Williams', 'charlie3@example.com', '345-678-9012', TRUE, 2),
+    ( 'user4', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Diana', 'Brown', 'diana4@example.com', '456-789-0123', TRUE, 2),
+    ( 'user5', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Ethan', 'Jones', 'ethan5@example.com', '567-890-1234', TRUE, 2),
+    ( 'user6', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Fiona', 'Garcia', 'fiona6@example.com', '678-901-2345', TRUE, 2),
+    ( 'user7', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'George', 'Martinez', 'george7@example.com', '789-012-3456', TRUE, 2),
+    ( 'user8', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Hannah', 'Davis', 'hannah8@example.com', '890-123-4567', TRUE, 2),
+    ( 'user9', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Ian', 'Rodriguez', 'ian9@example.com', '901-234-5678', TRUE, 2),
+    ( 'user10', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Jenna', 'Hernandez', 'jenna10@example.com', '012-345-6789', TRUE, 2),
+    ( 'user11', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Kevin', 'Lopez', 'kevin11@example.com', '111-222-3333', TRUE, 2),
+    ( 'user12', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Laura', 'Gonzalez', 'laura12@example.com', '222-333-4444', TRUE, 2),
+    ( 'user13', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Mike', 'Wilson', 'mike13@example.com', '333-444-5555', TRUE, 2),
+    ( 'user14', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Nina', 'Anderson', 'nina14@example.com', '444-555-6666', TRUE, 2),
+    ( 'user15', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Oscar', 'Thomas', 'oscar15@example.com', '555-666-7777', TRUE, 2),
+    ( 'user16', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Paula', 'Taylor', 'paula16@example.com', '666-777-8888', TRUE, 2),
+    ( 'user17', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Quinn', 'Moore', 'quinn17@example.com', '777-888-9999', TRUE, 2),
+    ( 'user18', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Rachel', 'Jackson', 'rachel18@example.com', '888-999-0000', TRUE, 2),
+    ( 'user19', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'Steve', 'Martin', 'steve19@example.com', '999-000-1111', TRUE, 2)
+    ON CONFLICT (username) DO NOTHING;`)
+
+
   await pool.query(`
-    INSERT INTO vehicles (user_id, vehicle_type, max_capacity_kg, city_id)
+    INSERT INTO vehicles (id, user_id, vehicle_type, max_capacity_kg, city_id)
     VALUES 
-   (NULL, 'light', 500, 1),
-    (NULL, 'medium', 500, 2),
-    (NULL, 'heavy', 1000, 3),
-    (NULL, 'heavy', 1000, 4),
-    (NULL, 'heavy', 1000, 5),
-    (NULL, 'light', 200, 6),
-    (NULL, 'light', 200, 7),
-    (NULL, 'light', 200, 8),
-    (NULL, 'light', 200, 9);`)
+   (1, 1, 'light', 500, 1),
+    (2, 2, 'medium', 500, 2),
+    (3,3, 'heavy', 1000, 3),
+    (4, 4, 'heavy', 1000, 4),
+    (5,5, 'heavy', 1000, 5),
+    (6,6, 'light', 200, 6),
+    (7,7, 'light', 200, 7),
+    (8,8, 'light', 200, 8),
+    (9,9, 'light', 200, 9),
+    (10,10 , 'light', 500, 1),
+    (11, 11, 'medium', 500, 2),
+    (12, 12, 'heavy', 1000, 3),
+    (13, 13, 'heavy', 1000, 4),
+    (14, 14, 'heavy', 1000, 5),
+    (15, 15, 'light', 200, 6),
+    (16, 16, 'light', 200, 7),
+    (17, 17, 'light', 200, 8),
+    (18, 18, 'light', 200, 9),
+    (19, null, 'light', 200, 9)
+    ON CONFLICT (id) DO NOTHING;`)
+
+
+
+  await pool.query(`
+
+    
+    `)
       
   await pool.query(`CREATE TABLE IF NOT EXISTS shipping_form (
       id SERIAL PRIMARY KEY,
@@ -236,7 +277,8 @@ const setupDatabase = async (pool) => {
       shipping_from INT references locations(id) NOT NULL,
       created_at DATE NOT NULL DEFAULT CURRENT_DATE,
       vehicle_to_id INT references vehicles(id), 
-      vehicle_from_id INT references vehicles(id) 
+      vehicle_from_id INT references vehicles(id),
+      finished_date DATE
     );`);
 
 

@@ -43,6 +43,7 @@
         }
         console.log('ABC');
         await useAddShippingFormAsync({weight, inventory, shippingFrom, shippingTo})
+        closeModal();
     }
 </script>
 
@@ -59,10 +60,10 @@
                         <label>Inventory</label>
                         <div v-for="(item, index) in inventory" :key="index" class="flex gap-2">
                             <input type="text" class="bg-white border-black border-2" placeholder="item name" v-model="inventory[index]">
-                            <button @click="removeItem(index)" class="bg-gray-200 rounded-2xl p-2">Remove</button>
+                            <button @click.prevent="removeItem(index)" class="bg-gray-200 rounded-2xl p-2">Remove</button>
                         </div>
 
-                        <button @click="addItem" class="bg-gray-200">Add</button>
+                        <button @click.prevent="addItem" class="bg-gray-200">Add</button>
 
 
                         <label>Shipping From</label>

@@ -56,6 +56,7 @@ export const useGetAllUsers = () => {
 
 
 
+
 export const useGetClientShippingForm = () => {
     return useQuery({
         queryKey: [`clientShippingForm`],
@@ -189,6 +190,33 @@ export const useGetShippingForm = () => {
     })
 }
 
+export const useGetCompany= () => {
+    return useQuery({
+        queryKey: ['company'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/company/`)
+                if (result.status === 200){
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
+                }
+            }
+        }
+    })
+}
+
+
+
+
+
+
+
 export const useGetPendingShippingForm = () => {
     return useQuery({
         queryKey: ['pendingShippingForm'],
@@ -238,7 +266,18 @@ export const useAddShippingForm = () => {
     const queryClient = useQueryClient()
     const {mutateAsync: useAddShippingFormAsync} = useMutation({
         mutationFn: addShippingForm,
-        onSuccess: ()=> queryClient.invalidateQueries({queryKey: ["clientShippingForm"]})
+        onSuccess: ()=> {
+            
+            queryClient.invalidateQueries({queryKey: ["clientShippingForm"]})
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdTo']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFrom']});
+
+
+
+
+
+        }
+        
     })
     return {useAddShippingFormAsync}
 }
@@ -300,12 +339,12 @@ export const useUpdateUserPhoneAndEmail = () => {
 }
 
 
-export const useGetShippingFormVehicleId = () => {
+export const useGetShippingFormVehicleIdFrom = () => {
     return useQuery({
-        queryKey: ['shippingFormVehicleId'],
+        queryKey: ['shippingFormVehicleIdFrom'],
         queryFn: async () => {
             try{
-                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/getShippingFormByVehicleId`)
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/getShippingFormByVehicleIdFrom`)
                 if (result.status === 200){
                     console.log(result);
                     console.log(result.data.message , "message");
@@ -322,6 +361,53 @@ export const useGetShippingFormVehicleId = () => {
 
     })    
 }
+export const useGetShippingFormVehicleIdTo = () => {
+    return useQuery({
+        queryKey: ['shippingFormVehicleIdTo'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/getShippingFormByVehicleIdTo`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
+                }
+            }
+        }
+
+    })    
+}
+
+export const useCouriersGetPastTransactions = () => {
+    return useQuery({
+        queryKey: ['shippingFormVehicleIdFinished'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/getShippingFormByVehicleIdFinished`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
+                }
+            }
+        }
+
+    })      
+}
+
+
 
 export const updateStatusForm = async ({formId, newStatus}) => {
     console.log("new status: ", newStatus);
@@ -349,9 +435,12 @@ export const useUpdateStatusForm = () => {
     const {mutateAsync: useUpdateStatusFormAsync } = useMutation({
         mutationFn: updateStatusForm,
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleId']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleId']})
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdTo']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFrom']});
             queryClient.invalidateQueries({queryKey: ['shippingForm']});
             queryClient.invalidateQueries({queryKey: ['clientShippingForm']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFinished']});
         }
     })
     return {useUpdateStatusFormAsync}
@@ -383,8 +472,11 @@ export const useUpdateVehicleAssignment = () => {
         mutationFn: updateVehicleAssignment,
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['shippingFormVehicleId']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdTo']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFrom']});
             queryClient.invalidateQueries({queryKey: ['shippingForm']});
             queryClient.invalidateQueries({queryKey: ['clientShippingForm']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFinished']});
         }
     })
     return {useUpdateVehicleAssignmentAsync}
@@ -417,9 +509,12 @@ export const useUpdateStatusFormInAdmin = () => {
         mutationFn: updateStatusFormInAdmin,
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['shippingFormVehicleId']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdTo']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFrom']});
             queryClient.invalidateQueries({queryKey: ['shippingForm']});
             queryClient.invalidateQueries({queryKey: ['clientShippingForm']});
             queryClient.invalidateQueries({queryKey: ['pendingShippingForm']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFinished']});
         }
     })
     return {useUpdateStatusFormInAdminAsync}
