@@ -59,23 +59,30 @@
 </script>
 
 <template>
-
-    <div class="min-h-screen flex flex-col text-black bg-blue-400 box-border">
-        <HeaderX/>
-        <div class="flex-grow flex flex-col justify-center items-center rounded-2xl">
-            <div class="bg-white rounded-2xl">
-                <form class="p-5 flex flex-col gap-5" @submit.prevent="handleLogin">
-                    <label>Username</label>
-                    <input type="text"  name="username" class="bg-white border-black border-[1px]" v-model="username" > 
-                    <label>Password</label>
-                    <input type="password" name="password" class="bg-white border-black border-[1px]" v-model="password">
-                    <div>Don't have an account yet? <RouterLink to="/register" class="font-bold bg-blue-300 p-2 rounded-2xl">Click Here!</RouterLink></div>
-                    <button type="submit" class="bg-blue-400 p-2 rounded-2xl">Submit</button>
-                </form>
+    <HeaderX/>
+    <div class="min-h-screen flex flex-col text-black bg-blue-200 box-border">
+        <div class="flex-grow flex flex-row justify-center items-center rounded-2xl">
+            <div class="bg-white rounded-2xl flex flex-row shadow-[#454545] shadow-2xl">
+                <div>
+                    <form class="p-5 flex flex-col gap-5" @submit.prevent="handleLogin">
+                        <label>Username</label>
+                        <input type="text"  name="username" class=" border-black border-[1px]" v-model="username" > 
+                        <label>Password</label>
+                        <input type="password" name="password" class="bg-white border-black border-[1px]" v-model="password">
+                        <div>Don't have an account yet? <RouterLink to="/register" class="font-bold bg-blue-300 p-2 rounded-2xl">Click Here!</RouterLink></div>
+                        <button type="submit" class="bg-blue-400 p-2 rounded-2xl">Submit</button>
+                    </form>
+                </div>
+                <div class="bg-white rounded-r-2xl">
+                    <img class="rounded-r-2xl" 
+                    src="https://media.istockphoto.com/id/859916128/photo/truck-driving-on-the-asphalt-road-in-rural-landscape-at-sunset-with-dark-clouds.jpg?s=612x612&w=0&k=20&c=tGF2NgJP_Y_vVtp4RWvFbRUexfDeq5Qrkjc4YQlUdKc=">
+                </div>
             </div>
 
+            
         </div>
         <error/>
+        
     </div>
 
     

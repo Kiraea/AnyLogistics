@@ -11,54 +11,42 @@
 </script>
 
 <template>
-    <body class="bg-white grow min-h-screen flex flex-col gap-5">
+    <body class="bg-white grow min-h-screen flex flex-row gap-5 items-left">
 
-<!--Navigation button divs-->
-        <div name="subcategories" class="bg-blue-300 w-fit h-fit rounded-br-xl p-2 flex flex-row">
+        <div name="subcategories" class="bg-[#081A51] w-fit min-h-screen rounded-br-xl flex flex-col text-white">
 
-            <div name="button1" class="items-center flex flex-col mx-2" @click="switchTo('/admin/viewAccounts')">
-                <button name="c1" class="rounded-full bg-white mx-4 p-4 w-fit">
-                    <v-icon name="co-user" scale="2.5" fill="#000000" animation="float" hover/>
-                </button>
-                <span class="text-center">View Users</span>
+            <div name="button1" class="items-center flex flex-row px-2 py-2 hover:bg-blue-300" @click="switchTo('/admin/viewAccounts')">
+                <v-icon name="co-user" scale="1.8" fill="#ffffff" class="ml-2 mr-4"/>
+                <span class="text-center pr-4">View Users</span>
             </div>
 
-            <div name="button2" class="items-center flex flex-col mx-2" @click="switchTo('/admin/approveAccounts')">
-                <button name="c2" class="rounded-full bg-white mx-4 p-4 w-fit">
-                    <v-icon name="fa-user-check" scale="2.5" fill="#000000" animation="float" hover/>
-                </button>
+            <div name="button2" class="items-center flex flex-row px-2 py-2 hover:bg-blue-300" @click="switchTo('/admin/approveAccounts')">
+                <v-icon name="fa-user-check" scale="1.8" fill="#ffffff" class="ml-2 mr-4"/>
                 <span class="text-center">Approve Users</span>
             </div>
 
-            <div name="button3" class="items-center flex flex-col mx-2">
-                <div name="c3" class="rounded-full bg-white mx-4 p-4 w-fit" @click="switchTo('/admin/companies')">
-                    <v-icon name="co-building" scale="2.5" fill="#000000" animation="float" hover/>
-                </div>
+            <div name="button3" class="items-center flex flex-row pl-2 py-2 pr-4 hover:bg-blue-300" @click="switchTo('/admin/companies')">
+                <v-icon name="co-building" scale="1.8" fill="#ffffff" class="ml-2 mr-4"/>
                 <span class="text-center">View Companies</span>
             </div>
 
             
-            <div name="button4" class="items-center flex flex-col mx-2">
-                <div name="c4" class="rounded-full bg-white mx-4 p-4 w-fit" @click="switchTo('/admin/vehicles')">
-                    <v-icon name="bi-truck" scale="2.5" fill="#000000" animation="float" hover/>
-                </div>
+            <div name="button4" class="items-center flex flex-row px-2 py-2 hover:bg-blue-300" @click="switchTo('/admin/vehicles')">
+                <v-icon name="bi-truck" scale="1.8" fill="#ffffff" class="ml-2 mr-4"/>
                 <span class="text-center">View Vehicles</span>
             </div>
 
-            <div name="button5" class="items-center flex flex-col mx-2">
-                <div name="c5" class="rounded-full bg-white mx-4 p-4 w-fit" @click="switchTo('/admin/addVehicles/')">
-                    <v-icon name="bi-plus-square" scale="2.5" fill="#000000" animation="float" hover/>
-                </div>
+            <div name="button5" class="items-center flex flex-row px-2 py-2 hover:bg-blue-300" @click="switchTo('/admin/addVehicles/')">
+                <v-icon name="bi-plus-square" scale="1.8" fill="#ffffff" class="ml-2 mr-4"/>
                 <span class="text-center">Add Vehicle</span>
             </div>
 
-            <div name="button6" class="items-center flex flex-col mx-2">
-                <div name="c6" class="rounded-full bg-white mx-4 p-4 w-fit" @click="switchTo('/admin/shippingForms')">
-                    <v-icon name="ri-file-list-3-line" scale="2.5" fill="#000000" animation="float" hover />
-                </div>
+            <div name="button6" class="items-center flex flex-row px-2 py-2 hover:bg-blue-300" @click="switchTo('/admin/shippingForms')">
+                <v-icon name="ri-file-list-3-line" scale="1.8" fill="#ffffff" class="ml-2 mr-4"/>
                 <span class="text-center">Shipping Forms</span>
             </div>
         </div>
+
         <router-view/>
     </body>
 </template>

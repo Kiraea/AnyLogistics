@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/pages/Login.vue'
 import Register from '@/pages/Register.vue'
-import MainCourierPage from '@/pages/courier/MainCourierPage.vue'
-import MainClientPage from '@/pages/client/MainClientPage.vue'
+import MainCourierPage from '@/pages/courier/mainCourierPage.vue'
+import MainClientPage from '@/pages/client/mainClientPage.vue'
 import { useAuthStore } from '@/stores/auth'
 import UserList from '@/pages/admin/userList.vue'
 import AdminCompanies from '@/pages/admin/companies.vue'
@@ -88,25 +88,6 @@ const router = createRouter({
         }
       }
 
-    },
-    {
-      path: '/admin',
-      name: 'admin',
-      component: MainAdminPage,
-      beforeEnter : async (to,from) => {
-        
-        const authStore = useAuthStore();
-        await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
-        console.log(authStore.isLoading, authStore.isLoggedIn, authStore.companyName);
-        if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
-          console.log(authStore.companyName);
-          console.log("did go to client")
-          return true
-        }else{
-          console.log("did not go to client")
-          return {name: 'login'}
-        }
-      },
     },
     {
       path: '/admin',

@@ -11,22 +11,28 @@
 
 <template>
     <div class="py-8">
-
-
         <table class="w-full text-sm text-left rtl:text-right table-auto border border-gray-300">
-            <thead class="border-b border-gray-500">
+            <thead class="bg-blue-300">
                 <tr>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">ID</th>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">User ID</th>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">Courier Name</th>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">vehicle Type</th>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">Max Capacity (KG)</th>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">City ID</th>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">City Name</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">ID</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">User ID</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Courier Name</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">vehicle Type</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Max Capacity (KG)</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">City ID</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">City Name</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="vehicle in vehiclesData" :key="vehicle.id" class="border-b border-gray-300">
+                <tr 
+                    v-for="(vehicle, index) in vehiclesData" 
+                    :key="vehicle.id" 
+                    :class="{
+                    'bg-blue-100': index % 2 === 0,
+                    'bg-white': index % 2 !== 0,
+                    'border-b border-blue-200': index === vehiclesData.length - 1
+                    }"
+                >
                     <td class="px-6 py-3 border border-gray-500">{{ vehicle.id}}</td>
                     <td class="px-6 py-3 border border-gray-500">{{ vehicle.user_id}}</td>
                     <td class="px-6 py-3 border border-gray-500">{{ vehicle.username}}</td>

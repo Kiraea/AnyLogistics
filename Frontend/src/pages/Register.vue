@@ -150,10 +150,10 @@
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col text-black bg-white box-border">
+    <div class="min-h-screen flex flex-col text-black bg-blue-200 box-border">
         <HeaderX/>
         <div v-if="cities.length !== 0" class="flex-grow flex flex-row justify-center items-center gap-5">
-            <form @submit.prevent="handleRegisterSubmit" class="flex flex-col p-5 gap-3 bg-white border-[1px] border-black ">
+            <form @submit.prevent="handleRegisterSubmit" class="flex rounded-2xl flex-col p-5 gap-3 bg-white border-[1px] border-black ">
 
 
                 <label>Username</label>
@@ -162,30 +162,30 @@
                 <input type="password" class="bg-white border-[1px]" name="password" v-model="password"> 
 
 
-                <label>Firstname</label>
+                <label>First name</label>
                 <input type="text" class="bg-white border-[1px]"  name="firstName" v-model="firstName" > 
-                <label>Lastname</label>
+                <label>Last name</label>
                 <input type="text"  class="bg-white border-[1px]" name="lastName" v-model="lastName"> 
 
-                <label>email</label>
+                <label>Email</label>
                 <input type="text" class="bg-white border-[1px]" name="email" v-model="email" > 
-                <label>phoneNumber</label>
+                <label>Phone Number</label>
                 <input type="text"  class="bg-white border-[1px]" name="phoneNumber" v-model="phoneNumber"> 
 
-
+                <label>Account Type</label>
                 <select v-model="companyId" class="bg-white border-[1px]">
                     <option  :value=1>Admin</option>
                     <option  :value=2>Courier</option>
                     <option  :value=3>Client</option>
                 </select>
 
-                <div>Already have an account? <RouterLink to="/login" class="font-bold">Click Here!</RouterLink></div>
+                <div>Already have an account? <RouterLink to="/login" class="font-bold bg-blue-300 p-2 rounded-2xl">Click Here!</RouterLink></div>
                 <div class="flex flex-col">
                     <button type="submit" class="bg-blue-400 p-2 rounded-2xl">Submit</button>
                 </div>
 
             </form>
-            <div class="flex flex-col p-3 gap-3  bg-white border-[1px] border-black" v-if="companyId === 3">
+            <div class="flex flex-col p-3 gap-3 rounded-2xl bg-white border-[1px] border-black" v-if="companyId === 3">
                 <div class="flex flex-col"> <!-- 1 means client-->
                     <label>Company Name</label>
                     <input type="text" class="bg-white border-[1px]" name='companyName' v-model="companyName">  <!-- Need V-model -->
@@ -202,9 +202,6 @@
                     <select v-model="location.cityId" class="border-[1px]">
                         <option v-for="(city,index) in cities" :value="city.id" :key="index">{{ city.name }}</option>
                     </select> 
-
-
-
 
                 </div>
                     <button @click="removeLocation(index)" v-if="locations.length > 1">Remove</button>
