@@ -128,7 +128,7 @@ const runBackend = async () => {
 // ALL BACKEND CREATE COMMANDS
 //dasdasdsa
 const setupDatabase = async (pool) => {
-  
+  /*
   await pool.query(`DROP TABLE IF EXISTS shipping_form CASCADE`);
   await pool.query(`DROP TABLE IF EXISTS locations CASCADE;`);
   await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
@@ -146,7 +146,7 @@ const setupDatabase = async (pool) => {
   await pool.query(`CREATE TYPE vehicle_type_enum as ENUM('light', 'medium', 'heavy');`);
   await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
   await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'traveling to sortation', 'waiting', 'traveling to destination', 'finished');`);
-  
+  */
   
  
   // 1 same company but admin(logistic), 2 same compny(logistic) but rider, and 3-9999 is basically other companies 
@@ -240,7 +240,8 @@ const setupDatabase = async (pool) => {
     await pool.query(`
       INSERT INTO users (username, password, first_name, last_name, email, phone_number, is_validated, company_id)
      VALUES
-     ('admin', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'James', 'Bond', 'JamesBond@example.com', '123-456-7890', TRUE, 1);`)
+     ('admin', '$argon2id$v=19$m=65536,t=3,p=4$1vGzUzqhIbqpcVoahRVTHA$vkEYiKk5POeeH/J7EMlDbYFLPg6FBQTb1YbDP2ETCgs', 'James', 'Bond', 'JamesBond@example.com', '123-456-7890', TRUE, 1)
+       ON CONFLICT (username) DO NOTHING;`)
 
 
   await pool.query(`
@@ -283,7 +284,8 @@ const setupDatabase = async (pool) => {
       created_at DATE NOT NULL DEFAULT CURRENT_DATE,
       vehicle_to_id INT references vehicles(id), 
       vehicle_from_id INT references vehicles(id),
-      finished_date DATE
+      acknowledged BOOLEAN DEFAULT FALSE,
+      finished_date DATE DEFAULT NULL
     );`);
 
 

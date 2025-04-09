@@ -3,6 +3,11 @@
     import { useUpdateStatusForm } from '@/Queries';
     import { ref } from 'vue';
     import HeaderX from '@/components/HeaderX.vue';
+    import { useQueryClient } from '@tanstack/vue-query';
+  import { computed } from 'vue';
+    import { useGetSRFCancelledAndCourier } from '@/Queries';
+    import { axiosInstance } from '@/AxiosInstance';
+    import { useMutation } from '@tanstack/vue-query';
 
     const {useUpdateStatusFormAsync} = useUpdateStatusForm()
     //const {data: shippingFormVehicleData , isLoading: shippingFormVehicleIsLoading , isError: shippingFormVehicleIsError, error: shippingFormVehicleError } = useGetShippingFormVehicleId();
@@ -15,6 +20,35 @@
     const {data: shippingFormDataTo = [] , isLoading: shippingFormToIsLoading , isError: shippingFormToIsError, error: shippingFormToError } = useGetShippingFormVehicleIdTo()
     const {data: shippingFormDataFinished = [] , isLoading: shippingFormFinishedIsLoading , isError: shippingFormFinishedIsError, error: shippingFormFinishedError } = useCouriersGetPastTransactions()
 
+    const {data: cancelledSRF = [] } = useGetSRFCancelledAndCourier()
+
+    const filteredCancelledSRF = computed(() =>
+      (cancelledSRF.value || []).filter(
+        item => item.status === 'declined' && item.acknowledged === false
+      )
+    )
+
+
+// Mutation to mark SRF as acknowledged
+    const queryClient = useQueryClient()
+    const { mutate: acknowledgeItemAsync} = useMutation({
+      mutationFn: async (id) => {
+        try{
+          await axiosInstance.patch(`/api/shippingForm/getCancelledCourierSRF`, {formId: id})
+        }catch(e){
+          console.log(e)
+        }
+      },
+      onSuccess: () => {
+        // Refresh SRF data after success
+        queryClient.invalidateQueries(['SRFCancelledCourier'])
+      }
+    })
+
+    // Acknowledge the SRF when checkbox is clicked
+    const acknowledgeItem = async (id) => {
+      await acknowledgeItemAsync(id)  // Trigger the mutation with the SRF ID
+    }
 
 
     const handleUpdateStatusSF = async (formId, newStatus) => {
@@ -28,6 +62,20 @@
 <template>
    <div class="min-h-screen flex flex-col text-black bg-white items-center box-border gap-5">
     <HeaderX />
+
+    <div v-for="item in filteredCancelledSRF" :key="item.id">
+    <p>{{ item.id}}</p>
+    <label>
+      <input
+        type="checkbox"
+        :checked="item.acknowledged"
+        @change="acknowledgeItem(item.id)"
+      />
+      Acknowledge
+      </label>
+    </div>
+
+
 
     <div class="w-full flex items-start pl-5 ">
         <div class="font-bold max-[767px]:text-sm">
@@ -212,6 +260,17 @@
       </tr>
     </tbody>
   </table>
+
+  <div v-for="item in filteredCancelledSRF" :key="item.id">
+  <p>{{ item.name }}</p>
+  <label>
+    <input
+      type="checkbox"
+      :checked="item.acknowledged"
+      @change="acknowledgeItem(item.id)"
+    />
+    </label>
+  </div>
 </div>
   </div>
 

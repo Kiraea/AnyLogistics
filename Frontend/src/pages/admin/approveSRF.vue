@@ -37,6 +37,11 @@
             await useUpdateVehicleAssignmentAsync({formId: formId})
         }
     }
+
+
+    const cancelSRF = async (formId, newStatus) =>{
+        await useUpdateStatusFormInAdminAsync()
+    }
 </script>
 
 <template>
@@ -69,12 +74,16 @@
                     <td class="px-6 py-3 border-x border-blue-200">{{ srf.formatted_date }}</td>
                     <td class="px-2 py-2 text-center border-x border-blue-200">
                         <div class="flex justify-center gap-2">
+                            <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-1" @click="cancelSRF(srf.id, 'declined')">
+                               Cancel Request 
+                            </button>
+
                             <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-1" @click="updateStatus(srf.id, 'ready for pickup')">
-                                Accept
+                               Approve
                             </button>
-                            <button class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1" @click="updateStatus(srf.id, 'declined')">
-                                Reject
-                            </button>
+
+
+
                         </div>
                     </td>
                 </tr>

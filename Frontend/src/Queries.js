@@ -588,6 +588,7 @@ export const useUpdateVehicleAssignment = () => {
             queryClient.invalidateQueries({queryKey: ['shippingForm']});
             queryClient.invalidateQueries({queryKey: ['clientShippingForm']});
             queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFinished']});
+            queryClient.invalidateQueries({queryKey: ['SRFCancelledCourier']});
         }
     })
     return {useUpdateVehicleAssignmentAsync}
@@ -595,6 +596,29 @@ export const useUpdateVehicleAssignment = () => {
 }
 
 
+
+export const useGetSRFCancelledAndCourier = () => {
+    return useQuery({
+        queryKey: ['SRFCancelledCourier'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/getCancelledCourierSRF`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    console.log(e)
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
+                }
+            }
+        }
+
+    })      
+}
 
 export const updateStatusFormInAdmin = async ({formId, newStatus}) => {
     try {
@@ -622,10 +646,12 @@ export const useUpdateStatusFormInAdmin = () => {
             queryClient.invalidateQueries({queryKey: ['shippingFormVehicleId']});
             queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdTo']});
             queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFrom']});
+            queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFrom']});
             queryClient.invalidateQueries({queryKey: ['shippingForm']});
             queryClient.invalidateQueries({queryKey: ['clientShippingForm']});
             queryClient.invalidateQueries({queryKey: ['pendingShippingForm']});
             queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFinished']});
+            queryClient.invalidateQueries({queryKey: ['SRFCancelledCourier']});
         }
     })
     return {useUpdateStatusFormInAdminAsync}

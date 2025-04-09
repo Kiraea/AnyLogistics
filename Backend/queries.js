@@ -111,6 +111,8 @@ const queries = {
             RETURNING *;
         `,
 
+
+
         findFreeVehicleQ:`
         SELECT v.*
         FROM vehicles v
@@ -265,6 +267,22 @@ const queries = {
             INSERT INTO shipping_form (client_id, weight, status, inventory, shipping_from, shipping_to) 
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *;
+        `,
+        getShippingFormCancelledCourier: `
+            SELECT s.*
+            FROM shipping_form s
+            LEFT JOIN vehicles vt ON s.vehicle_to_id = vt.id
+            LEFT JOIN vehicles vf ON s.vehicle_from_id = vf.id
+            LEFT JOIN users ut ON vt.user_id = ut.id
+            LEFT JOIN users uf ON vf.user_id = uf.id
+            WHERE s.status = 'declined' 
+                AND (vt.user_id = $1 OR vf.user_id = $1);
+
+        `,
+        acknowledgeSRF:`
+            UPDATE shipping_form
+            SET acknowledged = TRUE
+            WHERE id = $1;
         `,
         getShippingFormByVehicleId:`
             SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formatted_date

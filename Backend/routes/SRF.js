@@ -74,7 +74,45 @@ router.patch('/updateSRF', verifySessionToken, verifyRole, async (req,res)=> {
         console.log(e)
         res.status(500).json({status: "error", message: "Cannot get shipping form server error" })
     }
+
+
+
+
 })
+
+
+router.get('/getCancelledCourierSRF', verifySessionToken, verifyRole, async (req,res)=> {
+
+    const userId = req.userId;
+    
+    try{
+        let result = await pool.query(queries.shippingForm.getShippingFormCancelledCourier, [userId]);
+        if (result.rowCount > 0){
+            res.status(200).json({status: "success", message: "succesfully get shipping form", data: result.rows})
+        }else{
+            res.status(200).json({status: "success", message: "no shipping form present", data: null})
+        }
+    }catch(e){
+        console.log(e)
+        res.status(500).json({status: "error", message: "Cannot get shipping form server error" })
+    }
+})
+
+router.put('/updateShippingAcknowledged', verifySessionToken, async (req,res)=> {
+    const userId = req.userId;
+    try{
+        let result = await pool.query(queries.shippingForm.acknowledgeSRF, [userId]);
+        if (result.rowCount > 0){
+            res.status(200).json({status: "success", message: "X", data: result.rows})
+        }else{
+            res.status(200).json({status: "success", message: "X", data: null})
+        }
+    }catch(e){
+        console.log(e)
+        res.status(500).json({status: "error", message: "X" })
+    } 
+})
+
 
 router.get('/shippingFormByUserId', verifySessionToken, verifyRole, async (req,res)=> {
 
