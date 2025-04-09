@@ -102,6 +102,8 @@
 
                     <th class="p-2  text-center  border border-gray-500">Location From</th>
                     <th class="p-2  text-center  border border-gray-500">Location To</th>
+                    <th class="p-2  text-center  border border-gray-500">Vehicle From ID</th>
+                    <th class="p-2  text-center  border border-gray-500">Vehicle To ID</th>
 
                     <th class="p-2  text-center  border border-gray-500">Courier Name (Delivery)</th>
                     <th class="p-2  text-center  border border-gray-500">Courier Name (Pickup)</th>
@@ -124,6 +126,8 @@
 
                     <td class="p-2  text-center border border-gray-500">{{ eachSRF.location_from_address}}</td>
                     <td class="p-2  text-center border border-gray-500">{{ eachSRF.location_to_address}}</td>
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.vehicle_from_id}}</td>
+                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.vehicle_to_id}}</td>
 
                     <td class="p-2  text-center border border-gray-500">{{ eachSRF.user_to_courier}}</td>
                     <td class="p-2  text-center border border-gray-500">{{ eachSRF.user_from_courier}}</td>

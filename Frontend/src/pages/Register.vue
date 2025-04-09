@@ -150,10 +150,12 @@
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col text-black bg-blue-400 box-border">
+    <div class="min-h-screen flex flex-col text-black bg-white box-border">
         <HeaderX/>
         <div v-if="cities.length !== 0" class="flex-grow flex flex-row justify-center items-center gap-5">
-            <form @submit.prevent="handleRegisterSubmit" class="flex flex-col p-5 gap-3 bg-white rounded-2xl">
+            <form @submit.prevent="handleRegisterSubmit" class="flex flex-col p-5 gap-3 bg-white border-[1px] border-black ">
+
+
                 <label>Username</label>
                 <input type="text" class="bg-white border-[1px]" name="username" v-model="username" > 
                 <label>Password</label>
@@ -183,21 +185,21 @@
                 </div>
 
             </form>
-            <div class="flex flex-col p-3 gap-3 bg-blue-200 rounded-2xl" v-if="companyId === 3">
+            <div class="flex flex-col p-3 gap-3  bg-white border-[1px] border-black" v-if="companyId === 3">
                 <div class="flex flex-col"> <!-- 1 means client-->
                     <label>Company Name</label>
-                    <input type="text" class="bg-white" name='companyName' v-model="companyName">  <!-- Need V-model -->
+                    <input type="text" class="bg-white border-[1px]" name='companyName' v-model="companyName">  <!-- Need V-model -->
                 </div>
 
                 <div v-for="(location,index) in locations" :key="index" class="flex flex-col">
                     <label>Location Name:</label>
-                    <input v-model="location.name" type="text" class="bg-white" placeholder="Enter location name" />
+                    <input v-model="location.name" type="text" class="bg-white border-[1px]" placeholder="Enter location name" />
 
                     <label>Address:</label>
-                    <input v-model="location.address" type="text"  class="bg-white" placeholder="Enter address" />
+                    <input v-model="location.address" type="text"  class="bg-white border-[1px]" placeholder="Enter address" />
 
                     <label>City:</label>
-                    <select v-model="location.cityId">
+                    <select v-model="location.cityId" class="border-[1px]">
                         <option v-for="(city,index) in cities" :value="city.id" :key="index">{{ city.name }}</option>
                     </select> 
 

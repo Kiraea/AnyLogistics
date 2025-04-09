@@ -97,6 +97,7 @@ const runBackend = async () => {
   const { router: cityRoutes} = await import('./routes/city.js');
   const { router: assignRoutes} = await import('./routes/assign.js');
   const { router: companyRoutes} = await import('./routes/company.js');
+  const { router: vehicleRoutes} = await import('./routes/vehicle.js');
 
 
   app.use('/api/users', userRoutes);
@@ -106,6 +107,7 @@ const runBackend = async () => {
   app.use('/api/city', cityRoutes); 
   app.use('/api/assign', assignRoutes);
   app.use('/api/company', companyRoutes);
+  app.use('/api/vehicle', vehicleRoutes);
 
 
 

@@ -20,6 +20,22 @@ router.get(`/`, async (req, res)=> {
 }) 
 
 
+router.get(`/post`, async (req, res)=> {
+    const {city} = req.body
+    try{
+        let result = await pool.query(queries.city.addCitiesQ, [city]);
+        if (result.rowCount > 0){
+            res.status(200).json({status: "success", message: "succesfully add cities", data: result.rows})
+        }else{
+            res.status(200).json({status: "success", message: "cannot add cities", data: null})
+        }
+    }catch(e){
+        console.log(e)
+        res.status(500).json({status: "error", message: "Cannot add cities due to server error, please try again" })
+    }    
+}) 
+
+
 
 
 

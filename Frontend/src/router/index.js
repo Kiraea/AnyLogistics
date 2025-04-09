@@ -12,6 +12,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 import ApproveSRF from '@/pages/admin/approveSRF.vue'
 import ApproveUserPage from '@/pages/admin/ApproveUserPage.vue'
 import MainAdminPage from '@/pages/admin/mainAdminPage.vue'
+import VehicleList from '@/pages/admin/vehicleList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -179,6 +180,23 @@ const router = createRouter({
               return {name: 'login'}
             }
           },
+        },
+        {
+          path: 'vehicles',
+          component: VehicleList,
+          beforeEnter : async (to,from) => {
+            const authStore = useAuthStore();
+            await authStore.authReady; // basically running the checkSessionToken but made it a promise so i can await so ti waits before running the below code
+    
+            if (authStore.isLoggedIn === true && authStore.companyName === "AnyLogisticsA" && authStore.isLoading === false){
+              console.log(authStore.companyName);
+              console.log("did go to vehicles")
+              return true
+            }else{
+              console.log("did not go to vehicles")
+              return {name: 'login'}
+            }
+          },
         }
       ]
     },
@@ -220,6 +238,7 @@ const router = createRouter({
         }
       },
     },
+
     {
       path: '/client',
       name: 'client',

@@ -109,6 +109,15 @@ const queries = {
         WHERE v.user_id IS NULL
         LIMIT 1;
         `,
+        getAllVehicles:`
+        SELECT v.*, u.last_name AS username, c.name AS city_name, c.id AS city_id
+        FROM vehicles v
+            LEFT JOIN users u
+            ON v.user_id = u.id
+            LEFT JOIN cities c
+            ON v.city_id = c.id
+        ;`,
+
         getUnassignedVehicleQ:`
             SELECT v.*
             FROM vehicles v
@@ -333,6 +342,11 @@ const queries = {
         getCitiesQ:`
             SELECT c.*
             FROM cities c;
+        `,
+        addCitiesQ:`
+            INSERT INTO cities (name)
+            VALUES ($1)
+            RETURNING *;
         `
     },
 

@@ -37,6 +37,13 @@
                 <span class="text-center">View Companies</span>
             </div>
 
+            
+            <div name="button3" class="items-center flex flex-col mx-2">
+                <div name="c3" class="rounded-full bg-white mx-4 p-4 w-fit" @click="switchTo('/admin/accounts/vehicles')">
+                    <v-icon name="co-building" scale="2.5" fill="#000000" animation="float" hover/>
+                </div>
+                <span class="text-center">View Vehicles</span>
+            </div>
         </div>
         <router-view/>
     </body>

@@ -31,6 +31,85 @@ export const useGetUnverifiedUsers = () => {
     })
 }
 
+
+
+export const useGetVehicles= () => { 
+    return useQuery({
+        queryKey: ['vehicles'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/vehicle/`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
+                }
+            }
+        }
+
+    })
+}
+
+export const useGetCities= () => { 
+    return useQuery({
+        queryKey: ['cities'],
+        queryFn: async () => {
+            try{
+                let result = await axiosInstance.get(`${import.meta.env.VITE_BASE_URL_LINK}/city/`)
+                if (result.status === 200){
+                    console.log(result);
+                    console.log(result.data.message , "message");
+                    return result.data.data
+            }
+            }catch(e){
+                if (e instanceof AxiosError){
+                    const errorStore = useErrorStore()
+                    errorStore.errorMessage = e.response?.data?.message
+                }
+            }
+        }
+
+    })
+}
+
+export const addCity =  async ({city}) => {
+    try {
+        let result = await axiosInstance.post(`${import.meta.env.VITE_BASE_URL_LINK}/city`, {
+            city: city
+        })
+        if (result.status === 200){
+            console.log(result.data.message , "message");
+            return result.data.data            
+        }
+    }catch(e){
+        console.log(e);
+        if (e instanceof AxiosError){
+            console.log(e)
+            const errorStore = useErrorStore()
+            errorStore.errorMessage = e.response?.data?.message
+        }
+    }
+}
+
+
+export const useAddCity = () => {
+    const queryClient = useQueryClient()
+    const {mutateAsync: useAddCityAsync} = useMutation({
+        mutationFn: addCity,
+        onSuccess: ()=> queryClient.invalidateQueries({queryKey: ["cities"]})
+    })
+    return {useAddCityAsync}
+}
+
+
+
+
+
 export const useGetAllUsers = () => { 
     return useQuery({
         queryKey: ['allUsers'],
