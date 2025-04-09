@@ -6,9 +6,6 @@ import { useMutation } from "@tanstack/vue-query";
 import { useErrorStore } from "./stores/error";
 
 
-
-
-
 export const useGetUnverifiedUsers = () => { 
     return useQuery({
         queryKey: ['unverifiedUsers'],
@@ -360,6 +357,7 @@ export const addShippingForm =  async ({ weight,  inventory, shippingFrom, shipp
             shippingFrom: shippingFrom.value, 
             shippingTo: shippingTo.value
         })
+        console.log("STATUS: " + result.status)
         if (result.status === 200){
             console.log(result.data.message , "message");
             return result.data.data            
