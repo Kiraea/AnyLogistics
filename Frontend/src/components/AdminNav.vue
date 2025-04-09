@@ -46,7 +46,7 @@
             </div>
 
             <div name="button5" class="items-center flex flex-col mx-2">
-                <div name="c5" class="rounded-full bg-white mx-4 p-4 w-fit" @click="switchTo('/admin/vehicles')">
+                <div name="c5" class="rounded-full bg-white mx-4 p-4 w-fit" @click="switchTo('/admin/addVehicles/')">
                     <v-icon name="bi-plus-square" scale="2.5" fill="#000000" animation="float" hover/>
                 </div>
                 <span class="text-center">Add Vehicle</span>

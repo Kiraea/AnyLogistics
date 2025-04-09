@@ -103,6 +103,13 @@ const queries = {
         `
     },
     vehicle: {
+
+        addNewVehicleQ:`
+            INSERT INTO vehicles (user_id, vehicle_type, max_capacity_kg, city_id)
+            VALUES ($1, $2, $3, $4)
+            RETURNING *;
+        `,
+
         findFreeVehicleQ:`
         SELECT v.*
         FROM vehicles v

@@ -21,10 +21,11 @@ router.get(`/`, async (req, res)=> {
 }) 
 
 router.post(`/`, verifySessionToken, async (req, res)=> {
-    const {userId} = req
-    const {vehicleType, cityId} = req.body
+    const {vehicleType, cityID} = req.body
 
-    let  maxCapacityKg;
+
+
+    let maxCapacityKg;
     if (vehicleType){
         if (vehicleType === "light"){
             maxCapacityKg = 200
@@ -36,7 +37,7 @@ router.post(`/`, verifySessionToken, async (req, res)=> {
     }
 
     try{
-        let result = await pool.query(queries.vehicle.addNewVehicle, [userId, vehicleType, maxCapacityKg, cityId]);
+        let result = await pool.query(queries.vehicle.addNewVehicleQ, [null, vehicleType, maxCapacityKg, cityID]);
         if (result.rowCount > 0){
             res.status(200).json({status: "success", message: "succesfully get vehicle", data: result.rows})
         }else{

@@ -57,7 +57,7 @@ export const useGetVehicles= () => {
 
 export const addVehicle=  async ({vehicleType, cityID}) => {
     try {
-        let result = await axiosInstance.post(`${import.meta.env.VITE_BASE_URL_LINK}/vehicles`, {
+        let result = await axiosInstance.post(`${import.meta.env.VITE_BASE_URL_LINK}/vehicle`, {
             vehicleType : vehicleType,
             cityID: cityID
         })
