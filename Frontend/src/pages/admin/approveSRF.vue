@@ -41,8 +41,7 @@
 </script>
 
 <template>
-    <HeaderX/>
-    <div class="py-8 px-8">
+    <div class="py-8">
         <h1 class="font-bold">Pending Shipping Forms</h1>
         <table class="w-full text-sm text-left rtl:text-right table-auto">
             <thead class="bg-blue-300">

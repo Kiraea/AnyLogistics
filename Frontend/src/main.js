@@ -5,8 +5,8 @@ import error from './components/error.vue';
 
 //VueIcons
 import { OhVueIcon, addIcons } from "oh-vue-icons";
-import { CoUser, FaUserCheck, CoBuilding } from "oh-vue-icons/icons";
-addIcons(CoUser, FaUserCheck, CoBuilding);
+import { CoUser, FaUserCheck, CoBuilding, BiTruck, BiPlusSquare, RiFileList3Line } from "oh-vue-icons/icons";
+addIcons(CoUser, FaUserCheck, CoBuilding, BiTruck, BiPlusSquare, RiFileList3Line);
 
 import App from './App.vue'
 import router from './router'
