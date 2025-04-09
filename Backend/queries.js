@@ -1,8 +1,9 @@
 const queries = {
     users: {
         getUsersQ: `
-            SELECT u.*
-            FROM users u;
+            SELECT u.*, c.name AS company_name
+            FROM users u
+            JOIN companies c ON u.company_id = c.id;
         `,
         getPublicInformationOfUserQ:`
             SELECT u.first_name, u.last_name, c.name as company_name, u.email, u.phone_number, c.id

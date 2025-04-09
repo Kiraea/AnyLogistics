@@ -362,8 +362,6 @@ export const useAddShippingForm = () => {
 }
 
 
-
-
 export const useGetUserPublicInformation= () => { 
     return useQuery({
         queryKey: ['userInformation'],

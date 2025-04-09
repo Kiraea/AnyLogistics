@@ -63,6 +63,7 @@ router.post(`/updateAssignToQualifiedDriver`, async (req, res)=> {
     }
 
     if (qualifiedVehicle.rowCount <= 0){
+        await pool.query(queries.shippingForm.updateShippingFormStatusById, ['pending', formId])
         return res.status(403).json({status: "failed", message: "no free vehicles are available", data: null})
     }
 

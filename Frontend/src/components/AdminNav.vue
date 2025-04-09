@@ -14,7 +14,7 @@
     <body class="bg-white grow min-h-screen flex flex-col gap-5">
 
 <!--Navigation button divs-->
-        <div name="subcategories" class="bg-blue-300 w-fit h-fit rounded-b-xl p-2 flex flex-row">
+        <div name="subcategories" class="bg-blue-300 w-fit h-fit rounded-br-xl p-2 flex flex-row">
 
             <div name="button1" class="items-center flex flex-col mx-2" @click="switchTo('/admin/viewAccounts')">
                 <button name="c1" class="rounded-full bg-white mx-4 p-4 w-fit">
