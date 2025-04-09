@@ -55,6 +55,40 @@ export const useGetVehicles= () => {
     })
 }
 
+export const addVehicle=  async ({vehicleType, cityID}) => {
+    try {
+        let result = await axiosInstance.post(`${import.meta.env.VITE_BASE_URL_LINK}/vehicles`, {
+            vehicleType : vehicleType,
+            cityID: cityID
+        })
+        if (result.status === 200){
+            console.log(result.data.message , "message");
+            return result.data.data            
+        }
+    }catch(e){
+        console.log(e);
+        if (e instanceof AxiosError){
+            console.log(e)
+            const errorStore = useErrorStore()
+            errorStore.errorMessage = e.response?.data?.message
+        }
+    }
+}
+
+
+export const useAddVehicle = () => {
+    const queryClient = useQueryClient()
+    const {mutateAsync: useAddVehicleAsync} = useMutation({
+        mutationFn: addVehicle,
+        onSuccess: ()=> queryClient.invalidateQueries({queryKey: ["vehicles"]})
+    })
+    return {useAddVehicleAsync}
+}
+
+
+
+
+
 export const useGetCities= () => { 
     return useQuery({
         queryKey: ['cities'],

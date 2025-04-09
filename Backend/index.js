@@ -241,7 +241,7 @@ const setupDatabase = async (pool) => {
   await pool.query(`
     INSERT INTO vehicles (id, user_id, vehicle_type, max_capacity_kg, city_id)
     VALUES 
-   (1, 1, 'light', 500, 1),
+   (1, 1, 'light', 200, 1),
     (2, 2, 'medium', 500, 2),
     (3,3, 'heavy', 1000, 3),
     (4, 4, 'heavy', 1000, 4),
@@ -250,7 +250,7 @@ const setupDatabase = async (pool) => {
     (7,7, 'light', 200, 7),
     (8,8, 'light', 200, 8),
     (9,9, 'light', 200, 9),
-    (10,10 , 'light', 500, 1),
+    (10,10 , 'light', 200, 1),
     (11, 11, 'medium', 500, 2),
     (12, 12, 'heavy', 1000, 3),
     (13, 13, 'heavy', 1000, 4),
