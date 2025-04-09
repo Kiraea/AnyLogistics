@@ -22,7 +22,6 @@
     const {useUpdateStatusFormInAdminAsync} = useUpdateStatusFormInAdmin()
     const {useUpdateVehicleAssignmentAsync} = useUpdateVehicleAssignment()
 
-
     const filteredSRFData = computed(() => {
         if (!Array.isArray(shippingFormData.value)) return []; 
         if ( shippingFormData.length === 0) return [];
@@ -41,7 +40,7 @@
 </script>
 
 <template>
-    <div class="py-8">
+    <div class="py-8 px-4">
         <h1 class="font-bold">Pending Shipping Forms</h1>
         <table class="w-full text-sm text-left rtl:text-right table-auto">
             <thead class="bg-blue-300">
@@ -60,7 +59,12 @@
                     <td class="px-6 py-3 border-x border-blue-200">{{ srf.company_name }}</td>
                     <td class="px-6 py-3 border-x border-blue-200">{{ srf.l_origin }}</td>
                     <td class="px-6 py-3 border-x border-blue-200">{{ srf.lo_dest }}</td>
-                    <td class="px-6 py-3 border-x border-blue-200">{{ srf.inventory }}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">
+                        <select>
+                            <option disabled selected>View Inventory</option>
+                            <option disabled v-for="item in srf.inventory">{{ item }}</option>
+                        </select>
+                    </td>
                     <td class="px-6 py-3 border-x border-blue-200">{{ srf.first_name }}</td>
                     <td class="px-6 py-3 border-x border-blue-200">{{ srf.formatted_date }}</td>
                     <td class="px-2 py-2 text-center border-x border-blue-200">
@@ -77,7 +81,7 @@
             </tbody>
         </table>
 
-        <div class="font-bold text-4xl">All Shipping Forms</div>
+        <div class="font-bold text-4xl mt-12">All Shipping Forms</div>
 
 
         <select v-model="filter">

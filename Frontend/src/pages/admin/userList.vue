@@ -30,7 +30,7 @@
     <p v-else>Loading users...</p>
 
     -->
-    <div class="py-8">
+    <div class="py-8 px-4">
         <div name="filters">
             <button class="mx-2">All</button>
             <button class="mx-2">Admins</button>
@@ -38,22 +38,36 @@
             <button class="mx-2">Couriers</button>
         </div>
 
-        <table class="w-full text-sm text-left rtl:text-right table-auto border border-gray-300">
-            <thead class="border-b border-gray-500">
+        <table class="w-full text-sm text-left rtl:text-right table-auto">
+            <thead class="bg-blue-300">
                 <tr>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">Username</th>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">User Type</th>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">Company</th>
-                    <th scope="col" class="px-6 py-3 border border-gray-500">Email</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Username</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Account Type</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Company</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">First Name</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Last Name</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Email</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Phone Number</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="user in users" :key="user.id" class="border-b border-gray-300">
-                    <td class="px-6 py-3 border border-gray-500">{{ user.username }}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ user.company_id }}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ user.company_id }}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ user.email }}</td>
-                </tr>
+            <tr 
+                v-for="(user, index) in users" 
+                :key="user.id" 
+                :class="{
+                'bg-blue-100': index % 2 === 0,
+                'bg-white': index % 2 !== 0,
+                'border-b border-blue-200': index === users.length - 1
+                }"
+            >
+                <td class="px-6 py-3 border-x border-blue-200">{{ user.username }}</td>
+                <td class="px-6 py-3 border-x border-blue-200">{{ user.company_id == 1 ? 'Admin' : user.company_id == 2 ? 'Courier' : 'Client'}}</td>
+                <td class="px-6 py-3 border-x border-blue-200">{{ user.company_name }}</td>
+                <td class="px-6 py-3 border-x border-blue-200">{{ user.first_name }}</td>
+                <td class="px-6 py-3 border-x border-blue-200">{{ user.last_name }}</td>
+                <td class="px-6 py-3 border-x border-blue-200">{{ user.email }}</td>
+                <td class="px-6 py-3 border-x border-blue-200">{{ user.phone_number }}</td>
+            </tr>
             </tbody>
         </table>
 
