@@ -8,15 +8,17 @@
     const errorStore = useErrorStore()
     const {errorMessage } = storeToRefs(errorStore)
     import error from '../error.vue';
+    import { useUpdateVehicleAssignment } from "@/Queries";
 
     const props = defineProps({isOpen: Boolean})
     const emit = defineEmits(['close']);
 
-    let weight = ref(-1)
+    let weight = ref(0)
     let shippingTo = ref(-1) // LocationId
     let shippingFrom = ref(-1) // location ID
     const {useAddShippingFormAsync} = useAddShippingForm();
     const {data: locationsData, isLoading:locationsIsLoading, error:locationsError, isError:locationsIsError} = useGetLocations();
+    const { useUpdateVehicleAssignmentAsync } = useUpdateVehicleAssignment();
 
     const inventory = ref(['']);
 
@@ -38,11 +40,16 @@
         }
 
         if (weight.value < 1 || shippingTo.value === "" || shippingFrom.value === "" || inventory.value.length < 1){
-            errorStore.$patch({errorMessage: "incomplete fields" })
+            errorStore.$patch({errorMessage: "Incomplete Fields." })
+            return;
+        } else if (weight.value > 1000) {
+            errorStore.$patch({errorMessage: "Indicated weight is higher than the maximum treshold."})
             return;
         }
-        console.log('ABC');
-        await useAddShippingFormAsync({weight, inventory, shippingFrom, shippingTo})
+
+        let result = await useAddShippingFormAsync({weight, inventory, shippingFrom, shippingTo})
+        await useUpdateVehicleAssignmentAsync({formId: result[0].id})
+
         closeModal();
     }
 </script>
@@ -68,13 +75,13 @@
 
                         <label>Shipping From</label>
                         <!--  SHOULD CHANGE THE SELECT HERE to get the location data value and use it as an option-->
-                        <select v-model="shippingTo" class="border-black border-2 rounded-2xl p-2">
+                        <select v-model="shippingFrom" class="border-black border-2 rounded-2xl p-2">
                             <option v-for="location in locationsData" :key="location.id" :value="location.id">{{ location.name }}</option>
                         </select>
 
                         <label>Shipping To</label>
                         <!--  SHOULD CHANGE THE SELECT HERE to get the location data value and use it as an option-->
-                        <select v-model="shippingFrom" class="border-black border-2 rounded-2xl p-2">
+                        <select v-model="shippingTo" class="border-black border-2 rounded-2xl p-2">
                             <option v-for="location in locationsData" :key="location.id" :value="location.id">{{ location.name }}</option>
                         </select>
 

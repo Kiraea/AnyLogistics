@@ -18,7 +18,7 @@ router.post('/', verifySessionToken, verifyRole, async (req , res) => {
     let jsonInventory = JSON.stringify(inventory);
 
     try{
-        let result = await pool.query(queries.shippingForm.addShippingFormQ, [userId, weight, "pending", jsonInventory, shippingFrom, shippingTo]);
+        let result = await pool.query(queries.shippingForm.addShippingFormQ, [userId, weight, "ready for pickup", jsonInventory, shippingFrom, shippingTo]);
         if (result.rowCount > 0){
             return res.status(200).json({status: "success", message: "succesfully added shipping form", data: result.rows})
         }else{
