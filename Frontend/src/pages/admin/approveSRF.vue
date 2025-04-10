@@ -46,7 +46,7 @@
 </script>
 
 <template>
-    <div class="py-8 px-4">
+    <div class="py-4 px-4">
         <!--
         <h1 class="font-bold">Pending Shipping Forms</h1>
         <table class="w-full text-sm text-left rtl:text-right table-auto">
@@ -93,63 +93,63 @@
         </table>
 -->
 
-        <div class="font-bold text-4xl mt-12">All Shipping Forms</div>
+        <div class="flex flex-row mb-4 items-right">
+            <div class="font-bold text-4xl">All Shipping Forms</div>
+            <select v-model="filter" class="mx-4 rounded-md bg-blue-100 py-2 pl-2">
+                <option value="requestor">requestor</option>
+                <option value="created_at">created_at</option>
+                <option value="status">status</option>
+            </select>
+        </div>
 
-
-        <select v-model="filter">
-            <option value="requestor">requestor</option>
-            <option value="created_at">created_at</option>
-            <option value="status">status</option>
-        </select>
-
-        <table class="w-full border-collapse border border-black">
+        <table class="w-full text-sm text-left rtl:text-right table-auto border border-gray-300">
             <thead>
-                <tr class="bg-gray-200">
+                <tr class="bg-blue-300">
 
                     <th scope="col" class="px-6 py-3 border-x border-blue-200">Action</th>
-                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Requestor</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Requesting<br>Client</th>
                     <th scope="col" class="px-6 py-3 border-x border-blue-200">Weight</th>
                     <th scope="col" class="px-6 py-3 border-x border-blue-200">Status </th>
                     <th scope="col" class="px-6 py-3 border-x border-blue-200">Inventory</th>
-                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Created At</th>
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Date of<br>Request</th>
 
 
-                    <th class="p-2  text-center  border border-gray-500">City From</th>
-                    <th class="p-2  text-center  border border-gray-500">City To</th>
+                    <th class="px-6 py-3 border-x border-blue-200">Originating<br>City</th>
+                    <th class="px-6 py-3 border-x border-blue-200">Destination<br>City</th>
 
-                    <th class="p-2  text-center  border border-gray-500">Location From</th>
-                    <th class="p-2  text-center  border border-gray-500">Location To</th>
-                    <th class="p-2  text-center  border border-gray-500">Vehicle From ID</th>
-                    <th class="p-2  text-center  border border-gray-500">Vehicle To ID</th>
+                    <th class="px-6 py-3 border-x border-blue-200">Originating<br>Location</th>
+                    <th class="px-6 py-3 border-x border-blue-200">Destination<br>Location</th>
+                    <th class="px-6 py-3 border-x border-blue-200">Pickup<br>Vehicle</th>
+                    <th class="px-6 py-3 border-x border-blue-200">Delivery<br>Vehicle</th>
 
-                    <th class="p-2  text-center  border border-gray-500">Courier Name (Delivery)</th>
-                    <th class="p-2  text-center  border border-gray-500">Courier Name (Pickup)</th>
+                    <th class="px-6 py-3 border-x border-blue-200">Courier Name (Pickup)</th>
+                    <th class="px-6 py-3 border-x border-blue-200">Courier Name (Delivery)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="eachSRF in filteredSRFData" :key="eachSRF.id" class=" border-black">
-                    <td v-if="eachSRF.status === 'finished' || eachSRF.status === 'declined'" class="p-2 text-center border border-gray-500"></td>
-                    <td v-else class="p-2 text-center border border-gray-500">  <button class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1" @click="cancelSRF(eachSRF.id, 'declined')">Cancel </button>   </td>
-                    <td class="p-2 text-center border border-gray-500">{{ eachSRF.client}}</td>
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.weight}}</td>
-                    <td class="p-2  text-center  border border-gray-500">{{ eachSRF.status}}</td>
-                    <td class="p-2 text-center border border-gray-500">
-                        <select >
+                    <td v-if="eachSRF.status === 'finished' || eachSRF.status === 'declined'" class="px-6 py-3 border-x border-blue-200"></td>
+                    <td v-else class="px-6 py-3 border-x border-blue-200">  <button class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1" @click="cancelSRF(eachSRF.id, 'declined')">Cancel </button>   </td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.client}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.weight}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.status}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">
+                        <select class="mx-4 rounded-md bg-blue-100">
                             <option v-for="itemValue in eachSRF.inventory">{{ itemValue }}</option>
                         </select>
                     </td>
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.formatted_date}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.formatted_date}}</td>
 
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.city_from_name}}</td>
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.city_to_name}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.city_from_name}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.city_to_name}}</td>
 
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.location_from_address}}</td>
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.location_to_address}}</td>
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.vehicle_from_id}}</td>
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.vehicle_to_id}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.location_from_address}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.location_to_address}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.vehicle_from_id}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.vehicle_to_id}}</td>
 
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.user_to_courier}}</td>
-                    <td class="p-2  text-center border border-gray-500">{{ eachSRF.user_from_courier}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.user_from_courier}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ eachSRF.user_to_courier}}</td>
                 </tr>
             </tbody>
         </table>

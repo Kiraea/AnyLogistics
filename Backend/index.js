@@ -150,14 +150,14 @@ const setupDatabase = async (pool) => {
   await pool.query(`CREATE TYPE vehicle_type_enum as ENUM('light', 'medium', 'heavy');`);
   await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
   await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'traveling to sortation', 'waiting', 'traveling to destination', 'finished');`);
-  */
+  
  
   // 1 same company but admin(logistic), 2 same compny(logistic) but rider, and 3-9999 is basically other companies 
   await pool.query(`CREATE TABLE IF NOT EXISTS companies (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL
   );`);
-
+  */
 
 
   await pool.query(`INSERT INTO companies (id, name) VALUES (1, 'AnyLogisticsA'), (2, 'AnyLogisticsB') ON CONFLICT (id) DO NOTHING;`);

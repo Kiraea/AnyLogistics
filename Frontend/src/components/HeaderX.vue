@@ -60,7 +60,7 @@
 <template>
     <header class="w-full bg-blue-700 text-black flex p-2 justify-between items-center">
 
-        <span class="text-3xl font-bold text-white">Any<span class="text-white">Logistics</span></span>
+        <span class="text-3xl font-bold text-white ml-4">Any<span class="text-white">Logistics</span></span>
 
         <div v-if="isLoggedIn" class="items-center flex flex-col"> 
             <RouterLink class="flex flex-col items-center"to="/profile"> 

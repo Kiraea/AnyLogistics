@@ -10,7 +10,8 @@
 </script>
 
 <template>
-    <div class="py-8">
+    <div class="py-4 px-4">
+        <div class="font-bold text-4xl mb-4">Vehicles</div> 
         <table class="w-full text-sm text-left rtl:text-right table-auto border border-gray-300">
             <thead class="bg-blue-300">
                 <tr>
@@ -33,13 +34,13 @@
                     'border-b border-blue-200': index === vehiclesData.length - 1
                     }"
                 >
-                    <td class="px-6 py-3 border border-gray-500">{{ vehicle.id}}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ vehicle.user_id}}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ vehicle.username}}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ vehicle.vehicle_type }}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ vehicle.max_capacity_kg}}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ vehicle.city_id}}</td>
-                    <td class="px-6 py-3 border border-gray-500">{{ vehicle.city_name}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ vehicle.id}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ vehicle.user_id}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ vehicle.username}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ vehicle.vehicle_type }}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ vehicle.max_capacity_kg}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ vehicle.city_id}}</td>
+                    <td class="px-6 py-3 border-x border-blue-200">{{ vehicle.city_name}}</td>
                 </tr>
             </tbody>
         </table>

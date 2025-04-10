@@ -30,8 +30,8 @@
     <p v-else>Loading users...</p>
 
     -->
-    <div class="py-8 px-4">
-
+    <div class="py-4 px-4">
+        <div class="font-bold text-4xl mb-4">All Users</div> 
 
         <table class="w-full text-sm text-left rtl:text-right table-auto">
             <thead class="bg-blue-300">
