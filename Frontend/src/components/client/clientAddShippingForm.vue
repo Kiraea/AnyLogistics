@@ -48,6 +48,7 @@
         }
 
         let result = await useAddShippingFormAsync({weight, inventory, shippingFrom, shippingTo})
+        //status: 'ready for pickup'
         await useUpdateVehicleAssignmentAsync({formId: result[0].id})
 
         closeModal();
