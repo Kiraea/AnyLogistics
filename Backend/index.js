@@ -4,6 +4,9 @@ import cors from 'cors';
 import Pool from 'pg-pool'
 import session from 'express-session'
 import connectPgSimple from 'connect-pg-simple';
+import { queries } from './queries.js';
+import cron from 'node-cron';
+import { router } from './routes/assign.js'
 let pool;
 
 const pgSession = connectPgSimple(session)
@@ -301,9 +304,73 @@ const setupDatabase = async (pool) => {
   `);
 }
 
-
-
 runBackend();
 //List of Routes
 
+app.use('/assign', router);
+
+//Cron job for pending SRFs
+let task = cron.schedule('*/10 * * * * *', async () =>{
+  //Retrieve all pending SRFs, sorted by date of creation
+  try{
+    let result = await pool.query(queries.shippingForm.getPendingShippingForm, ['pending']);
+    if (result.rowCount > 0){
+      console.log(result.rows[0].id)
+      //Run /assign/updateAssignToQualifiedDriver from assign.js
+      for (let row of result.rows){
+
+        let SRF;
+        try {
+            SRF = await pool.query(queries.shippingForm.getShippingFormById, [row.id]);
+        } catch(e) {
+            console.log(e) 
+        }
+        let SRFWeight = row.weight; // wait of the SRF cause we would need it for like finding trucks logic capacity thingy
+        let SRFId = row.id; // wait of the SRF cause we would need it for like finding trucks logic capacity thingy
+
+        // logic below is for getting the city of  the "from" and "to"  of  a shipping form
+        // but in this case it would only use the from since assining palang meaning driver would only deliver until sotration center
+
+        let SRFCity; // shipping request form but with the city
+        try{
+            SRFCity = await pool.query(queries.shippingForm.getShippingFormQIncludingLocationAndCityOfToAndFrom)
+        }catch(e){
+            console.log(e)
+        }
+
+        let from_city_id = SRFCity.rows[0].from_city_id;
+        console.log("city:" + from_city_id)
+        console.log(SRFWeight)
+        // logic below is logic for finding a qualified vehicle to be place in SRF
+        let qualifiedVehicle;
+        try{
+            qualifiedVehicle = await pool.query(queries.vehicle.getAvailableVehicleForSRFQByCapacityAndCity, [parseInt(from_city_id), parseInt(SRFWeight)])
+        }catch(e){
+            console.log(e)
+        }
+
+        if (qualifiedVehicle.rowCount <= 0){
+            await pool.query(queries.shippingForm.updateShippingFormStatusById, ['pending', formId])
+        } else {
+          let qualifiedVehicleId = qualifiedVehicle.rows[0].id
+          // set SRF to have FK of the qualifiedVehicle
+
+          try{
+              let result = await pool.query(queries.shippingForm.updateShippingFormToAVehicleId, [qualifiedVehicleId, SRFId]);
+              if( result.rowCount > 0){
+                await pool.query(queries.shippingForm.updateShippingFormStatusById, ['ready for pickup', SRFId])
+                  console.log("sucesfully connected to a vehicle Id")
+              }
+          }catch(e){
+              console.log(e)
+          }
+        }
+      }
+    }
+  }catch(e){
+      console.log('Error: ' + e)
+  }
+});
+
+task.start();
 export {pool}
