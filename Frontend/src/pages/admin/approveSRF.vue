@@ -40,7 +40,8 @@
 
 
     const cancelSRF = async (formId, newStatus) =>{
-        await useUpdateStatusFormInAdminAsync()
+        console.lo
+        await useUpdateStatusFormInAdminAsync({formId: formId, newStatus: newStatus})
     }
 </script>
 
@@ -102,6 +103,8 @@
         <table class="w-full border-collapse border border-black">
             <thead>
                 <tr class="bg-gray-200">
+
+                    <th scope="col" class="px-6 py-3 border-x border-blue-200">Action</th>
                     <th scope="col" class="px-6 py-3 border-x border-blue-200">Requestor</th>
                     <th scope="col" class="px-6 py-3 border-x border-blue-200">Weight</th>
                     <th scope="col" class="px-6 py-3 border-x border-blue-200">Status </th>
@@ -123,6 +126,8 @@
             </thead>
             <tbody>
                 <tr v-for="eachSRF in filteredSRFData" :key="eachSRF.id" class=" border-black">
+                    <td v-if="eachSRF.status === 'finished' || eachSRF.status === 'declined'" class="p-2 text-center border border-gray-500"></td>
+                    <td v-else class="p-2 text-center border border-gray-500">  <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-1" @click="cancelSRF(eachSRF.id, 'declined')">Cancel Request </button>   </td>
                     <td class="p-2 text-center border border-gray-500">{{ eachSRF.client}}</td>
                     <td class="p-2  text-center border border-gray-500">{{ eachSRF.weight}}</td>
                     <td class="p-2  text-center  border border-gray-500">{{ eachSRF.status}}</td>

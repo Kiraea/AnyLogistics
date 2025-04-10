@@ -22,26 +22,43 @@
 
     const {data: cancelledSRF = [] } = useGetSRFCancelledAndCourier()
 
+
+    console.log(cancelledSRF.value, "WHITE");
     const filteredCancelledSRF = computed(() =>
+
       (cancelledSRF.value || []).filter(
         item => item.status === 'declined' && item.acknowledged === false
       )
     )
 
+    console.log(filteredCancelledSRF.value, "BLACK");
 
 // Mutation to mark SRF as acknowledged
     const queryClient = useQueryClient()
-    const { mutate: acknowledgeItemAsync} = useMutation({
+    const { mutateAsync: acknowledgeItemAsync} = useMutation({
       mutationFn: async (id) => {
         try{
-          await axiosInstance.patch(`/api/shippingForm/getCancelledCourierSRF`, {formId: id})
+          await axiosInstance.put(`${import.meta.env.VITE_BASE_URL_LINK}/shippingForm/updateShippingAcknowledged`, {formId: id})     
         }catch(e){
           console.log(e)
         }
       },
-      onSuccess: () => {
-        // Refresh SRF data after success
-        queryClient.invalidateQueries(['SRFCancelledCourier'])
+      onSuccess: async () => {
+        console.log('Refetching SRFCancelledCourier query...'); // Add for debugging
+        await queryClient.refetchQueries({
+        queryKey: ['SRFCancelledCourier'],
+        exact: true,
+        type: 'active', // Refetch all active queries with this key
+        });
+        queryClient.invalidateQueries({queryKey: ['shippingFormVehicleId']});
+        queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdTo']});
+        queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFrom']});
+        queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFrom']});
+        queryClient.invalidateQueries({queryKey: ['shippingForm']});
+        queryClient.invalidateQueries({queryKey: ['clientShippingForm']});
+        queryClient.invalidateQueries({queryKey: ['pendingShippingForm']});
+        queryClient.invalidateQueries({queryKey: ['shippingFormVehicleIdFinished']});
+        queryClient.invalidateQueries({queryKey: ['SRFCancelledCourier']});
       }
     })
 
@@ -63,8 +80,8 @@
    <div class="min-h-screen flex flex-col text-black bg-white items-center box-border gap-5">
     <HeaderX />
 
-    <div v-for="item in filteredCancelledSRF" :key="item.id">
-    <p>{{ item.id}}</p>
+    <div v-for="item in filteredCancelledSRF" class="bg-red-200" :key="item.id">
+    <p>This shipping form is cancelled, {{ item.id}} deliver back to {{ item.location_from }}</p>
     <label>
       <input
         type="checkbox"
@@ -92,7 +109,13 @@
         <th class="px-6 py-3">Weight</th>
         <th class="px-6 py-3">Items Carried</th>
         <th class="px-6 py-3">Shipping To</th>
+        <th class="px-6 py-3">Shipping To Title</th>
+        <th class="px-6 py-3">Shipping To Address</th>
         <th class="px-6 py-3">Shipping From</th>
+        <th class="px-6 py-3">Shipping From Title</th>
+        <th class="px-6 py-3">Shipping From Address</th>
+        <th class="px-6 py-3">Client Name</th>
+        <th class="px-6 py-3">Client Phone</th>
         <th class="px-6 py-3">Status</th>
       </tr>
     </thead>
@@ -120,9 +143,35 @@
           {{ item.shipping_to }}
         </td>
 
-        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Shipping From: ">
-          {{ item.shipping_from }}
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Shipping To Title Address: ">
+          {{ item.to_location_name }}
         </td>
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Shipping To Address: ">
+          {{ item.to_location_address}}
+        </td>
+
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Shipping From: ">
+          {{ item.shipping_from}}
+        </td>
+ 
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Shipping From Title Address: ">
+          {{ item.from_location_name}}
+        </td>
+
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Shipping From Title Address: ">
+          {{ item.from_location_address}}
+        </td>
+
+
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Client Name">
+          {{ item.client_name}}
+        </td>
+
+
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Client Phone Number" >
+          {{ item.client_phone_number}}
+        </td>
+
 
         <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Status: ">
           <select 
@@ -156,7 +205,13 @@
         <th class="px-6 py-3">Weight</th>
         <th class="px-6 py-3">Items Carried</th>
         <th class="px-6 py-3">Shipping To</th>
+        <th class="px-6 py-3">Shipping To Title</th>
+        <th class="px-6 py-3">Shipping To Address</th>
         <th class="px-6 py-3">Shipping From</th>
+        <th class="px-6 py-3">Shipping From Title</th>
+        <th class="px-6 py-3">Shipping From Address</th>
+        <th class="px-6 py-3">Client Name</th>
+        <th class="px-6 py-3">Client Phone</th>
         <th class="px-6 py-3">Status</th>
       </tr>
     </thead>
@@ -183,10 +238,38 @@
         <td class="px-6 py-4 max-[767px]:block max-[767px]:before:content-[attr(data-label)]" data-label="Shipping To: ">
           {{ item.shipping_to }}
         </td>
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:before:content-[attr(data-label)]" data-label="Shipping To Title: ">
+          {{ item.to_location_name }}
+        </td>
+
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:before:content-[attr(data-label)]" data-label="Shipping To Address: ">
+          {{ item.to_location_address }}
+        </td>
+
+
+
 
         <td class="px-6 py-4 max-[767px]:block max-[767px]:before:content-[attr(data-label)]" data-label="Shipping From: ">
           {{ item.shipping_from }}
         </td>
+
+
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:before:content-[attr(data-label)]" data-label="Shipping From Title: ">
+          {{ item.from_location_name }}
+        </td>
+
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:before:content-[attr(data-label)]" data-label="Shipping From Address: ">
+          {{ item.from_location_address }}
+        </td>
+
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:before:content-[attr(data-label)]" data-label="Client Name: ">
+          {{ item.client_name }}
+        </td>
+
+        <td class="px-6 py-4 max-[767px]:block max-[767px]:before:content-[attr(data-label)]" data-label="Client Phone: ">
+          {{ item.client_phone_number }}
+        </td>
+
 
         <td class="px-6 py-4 max-[767px]:block max-[767px]:before:content-[attr(data-label)]" data-label="Status: ">
           <select 

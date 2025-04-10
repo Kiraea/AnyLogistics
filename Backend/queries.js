@@ -269,12 +269,17 @@ const queries = {
             RETURNING *;
         `,
         getShippingFormCancelledCourier: `
-            SELECT s.*
+            SELECT s.*, l_from.address AS location_from
             FROM shipping_form s
             LEFT JOIN vehicles vt ON s.vehicle_to_id = vt.id
             LEFT JOIN vehicles vf ON s.vehicle_from_id = vf.id
             LEFT JOIN users ut ON vt.user_id = ut.id
             LEFT JOIN users uf ON vf.user_id = uf.id
+
+            LEFT JOIN locations l_from ON s.shipping_from = l_from.id
+            LEFT JOIN cities c_from ON l_from.city_id = c_from.id
+
+
             WHERE s.status = 'declined' 
                 AND (vt.user_id = $1 OR vf.user_id = $1);
 
@@ -290,24 +295,58 @@ const queries = {
             WHERE s.vehicle_id = $1;        
         `,
         getShippingFormByVehicleIdFrom:`
-            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formatted_date
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formatted_date,
+            c_from.name AS from_city_name,
+            c_from.id AS from_city_id,
+            c_to.name AS to_city_name,
+            c_to.id AS to_city_id,
+            l_from.name AS from_location_name,
+            l_from.address AS from_location_address,
+            l_to.name AS to_location_name,
+            l_to.address AS to_location_address,
+            u.last_name AS client_name,
+            u.phone_number as client_phone_number 
             FROM shipping_form s
+            LEFT JOIN locations l_from ON s.shipping_from = l_from.id
+            LEFT JOIN locations l_to ON s.shipping_to = l_to.id
+            LEFT JOIN cities c_from ON l_from.city_id = c_from.id
+            LEFT JOIN cities c_to ON l_to.city_id = c_to.id
+            LEFT JOIN users u ON u.id = s.client_id
             WHERE s.vehicle_from_id = $1
-            AND s.status IN ('pending', 'declined', 'ready for pickup', 'traveling to sortation');   
+            AND s.status IN ('pending', 'declined', 'ready for pickup', 'traveling to sortation') AND acknowledged = false;   
         `,
         getShippingFormByVehicleIdFinished:`
             SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formatted_date,
             COALESCE(TO_CHAR(s.finished_date, 'Mon DD, YYYY'), 'Not yet finished') AS formatted_finished_date
             FROM shipping_form s
+            LEFT JOIN locations l_from ON s.shipping_from = l_from.id
+            LEFT JOIN locations l_to ON s.shipping_to = l_to.id
+            LEFT JOIN cities c_from ON l_from.city_id = c_from.id
+            LEFT JOIN cities c_to ON l_to.city_id = c_to.id
             WHERE s.status = 'finished'
             AND (s.vehicle_from_id = $1 OR s.vehicle_to_id = $2);
         `,
 
         getShippingFormByVehicleIdTo:`
-            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate
+            SELECT s.*, TO_CHAR(s.created_at, 'Mon DD, YYYY') as formattedDate,
+            c_from.name AS from_city_name,
+            c_from.id AS from_city_id,
+            c_to.name AS to_city_name,
+            c_to.id AS to_city_id,
+            l_from.name AS from_location_name,
+            l_from.address AS from_location_address,
+            l_to.name AS to_location_name,
+            l_to.address AS to_location_address,
+            u.last_name AS client_name,
+            u.phone_number as client_phone_number 
             FROM shipping_form s
+            LEFT JOIN locations l_from ON s.shipping_from = l_from.id
+            LEFT JOIN locations l_to ON s.shipping_to = l_to.id
+            LEFT JOIN cities c_from ON l_from.city_id = c_from.id
+            LEFT JOIN cities c_to ON l_to.city_id = c_to.id
+            LEFT JOIN users u ON u.id = s.client_id
             WHERE s.vehicle_to_id = $1
-            AND s.status IN ('traveling to destination','waiting');   
+            AND s.status IN ('traveling to destination','waiting' ,'declined') AND acknowledged = false;   
             ;        
         `,
         updateShippingFormStatusById: `

@@ -128,6 +128,7 @@ const runBackend = async () => {
 // ALL BACKEND CREATE COMMANDS
 //dasdasdsa
 const setupDatabase = async (pool) => {
+
   /*
   await pool.query(`DROP TABLE IF EXISTS shipping_form CASCADE`);
   await pool.query(`DROP TABLE IF EXISTS locations CASCADE;`);
@@ -147,7 +148,6 @@ const setupDatabase = async (pool) => {
   await pool.query(`CREATE TYPE vehicle_status_enum as ENUM('free', 'busy');`);
   await pool.query(`CREATE TYPE request_form_status_enum as ENUM('pending', 'declined', 'ready for pickup', 'traveling to sortation', 'waiting', 'traveling to destination', 'finished');`);
   */
-  
  
   // 1 same company but admin(logistic), 2 same compny(logistic) but rider, and 3-9999 is basically other companies 
   await pool.query(`CREATE TABLE IF NOT EXISTS companies (

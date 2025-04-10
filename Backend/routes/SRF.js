@@ -100,8 +100,14 @@ router.get('/getCancelledCourierSRF', verifySessionToken, verifyRole, async (req
 
 router.put('/updateShippingAcknowledged', verifySessionToken, async (req,res)=> {
     const userId = req.userId;
+
+
+    const {formId } = req.body
+
+
+    console.log("DID U EVEN RUN");
     try{
-        let result = await pool.query(queries.shippingForm.acknowledgeSRF, [userId]);
+        let result = await pool.query(queries.shippingForm.acknowledgeSRF, [formId]);
         if (result.rowCount > 0){
             res.status(200).json({status: "success", message: "X", data: result.rows})
         }else{
