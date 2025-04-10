@@ -17,9 +17,16 @@
             <th class="border border-black p-2">Weight</th>
             <th class="border border-black p-2">Created At</th>
             <th class="border border-black p-2">Status</th>
-            <th class="border border-black p-2">Shipping From</th>
-            <th class="border border-black p-2">Shipping To</th>
+            <th class="border border-black p-2">Point of Origin</th>
+
+            <th class="border border-black p-2">Courier to Pickup</th>
+            <th class="border border-black p-2">Phone Number Of Pickup Courier</th>
+            <th class="border border-black p-2">Destination</th>
+            <th class="border border-black p-2">Courier to Deliver to Destinaton</th>
+            <th class="border border-black p-2">Phone Number of Pickup Destination</th>
+
             <th class="border border-black p-2">Inventory</th>
+
 
         </tr>
     </thead>
@@ -34,11 +41,18 @@
                 <span>{{ shippingForm.from_location_address }} </span><br/>
                 <span>{{ shippingForm.from_city_name}} </span>
             </td>
+            <td class="border border-black p-2">{{ shippingForm.vehicle_from_last_name }}</td>
+            <td class="border border-black p-2">{{ shippingForm.vehicle_from_phone_number}}</td>
+
             <td class="border border-black p-2 ">
                 <span>{{ shippingForm.to_location_name }} </span><br/>
                 <span>{{ shippingForm.to_location_address }} </span><br/>
                 <span>{{ shippingForm.to_city_name}} </span>
             </td>
+
+            <td class="border border-black p-2">{{ shippingForm.vehicle_to_last_name}}</td>
+            <td class="border border-black p-2">{{ shippingForm.vehicle_to_phone_number}}</td>
+
             <td class="border border-black p-2">
                 <ul>
                     <li v-for="(item, index) in shippingForm.inventory" :key="index">• {{ item }}</li>

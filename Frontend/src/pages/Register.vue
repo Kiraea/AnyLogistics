@@ -155,6 +155,7 @@
         <div v-if="cities.length !== 0" class="flex-grow flex flex-row justify-center items-center gap-5">
             <form @submit.prevent="handleRegisterSubmit" class="flex rounded-2xl flex-col p-5 gap-3 bg-white border-[1px] border-black ">
 
+                <label class="text-4xl font-bold">Register</label>
 
                 <label>Username</label>
                 <input type="text" class="bg-white border-[1px]" name="username" v-model="username" > 

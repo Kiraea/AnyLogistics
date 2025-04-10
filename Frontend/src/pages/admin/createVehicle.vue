@@ -31,15 +31,29 @@ import { useAddVehicle } from '@/Queries';
 
     let options = ["light", "medium", "heavy"]
 
+
+    const convertTo = (nameObject) => {
+        if (nameObject === 'light'){
+            return "light (200KG)"
+        }else if (nameObject === 'medium'){
+
+            return "medium (500KG)"}
+        else if (nameObject === 'heavy'){
+            return "heavy (200KG)"
+
+        }
+    }
+
 </script>
 
 <template>
     <div  class="  flex ">
         <div class=" bg-white p-5 rounded-2xl ">
             <form class="flex flex-col p-5 gap-5" @submit.prevent="handleAddVehicle">
+                <div class="font-bold text-4xl">Create Vehicle</div>
                 <label class="font-bold">VehicleType</label>
                 <select v-model="vehicleType" class="border-black border-[1px]">
-                    <option v-for="(option) in options" :key="option" :value="option">{{ option }}</option>
+                    <option v-for="(option) in options" :key="option" :value="option">{{ convertTo(option) }}</option>
                 </select>
 
 

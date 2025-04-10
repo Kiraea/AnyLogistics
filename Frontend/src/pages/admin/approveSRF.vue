@@ -47,6 +47,7 @@
 
 <template>
     <div class="py-8 px-4">
+        <!--
         <h1 class="font-bold">Pending Shipping Forms</h1>
         <table class="w-full text-sm text-left rtl:text-right table-auto">
             <thead class="bg-blue-300">
@@ -90,6 +91,7 @@
                 </tr>
             </tbody>
         </table>
+-->
 
         <div class="font-bold text-4xl mt-12">All Shipping Forms</div>
 
@@ -127,7 +129,7 @@
             <tbody>
                 <tr v-for="eachSRF in filteredSRFData" :key="eachSRF.id" class=" border-black">
                     <td v-if="eachSRF.status === 'finished' || eachSRF.status === 'declined'" class="p-2 text-center border border-gray-500"></td>
-                    <td v-else class="p-2 text-center border border-gray-500">  <button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-1" @click="cancelSRF(eachSRF.id, 'declined')">Cancel Request </button>   </td>
+                    <td v-else class="p-2 text-center border border-gray-500">  <button class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1" @click="cancelSRF(eachSRF.id, 'declined')">Cancel </button>   </td>
                     <td class="p-2 text-center border border-gray-500">{{ eachSRF.client}}</td>
                     <td class="p-2  text-center border border-gray-500">{{ eachSRF.weight}}</td>
                     <td class="p-2  text-center  border border-gray-500">{{ eachSRF.status}}</td>

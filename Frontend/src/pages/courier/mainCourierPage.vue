@@ -80,7 +80,7 @@
    <div class="min-h-screen flex flex-col text-black bg-white items-center box-border gap-5">
     <HeaderX />
 
-    <div v-for="item in filteredCancelledSRF" class="bg-red-200" :key="item.id">
+    <div v-for="item in filteredCancelledSRF" class="bg-red-300 shadow-gray-200 shadow-md p-4 flex flex-col items-center rounded-2xl" :key="item.id">
     <p>This shipping form is cancelled, {{ item.id}} deliver back to {{ item.location_from }}</p>
     <label>
       <input
@@ -179,7 +179,7 @@
             @change="handleUpdateStatusSF(item.id, $event.target.value)" 
             class="border rounded max-[767px]:w-full"
           >
-            <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
+            <option v-for="option in options" :key="option" :value="option">{{ option === 'waiting' ? "In logistics" : option}}</option>
           </select>
         </td>
       </tr>
@@ -296,25 +296,36 @@
     </div>
 
 
-    <div v-if="shippingFormDataFinished?.length > 0" class="overflow-x-auto w-full">
+
+
   <table class="min-w-full text-sm text-left text-gray-500 max-[767px]:block">
-    <!-- Hidden headers on mobile -->
-    <thead class="text-xs text-gray-700 uppercase bg-gray-50 max-[767px]:hidden">
-      <!-- ... existing header content ... -->
-    </thead>
-    
-    <tbody class="max-[767px]:block">
-      <tr 
-        v-for="item in shippingFormDataFinished" 
-        :key="item.id" 
-        class="border-b max-[767px]:block max-[767px]:border-b-0 max-[767px]:mb-4 max-[767px]:border max-[767px]:rounded-lg"
-      >
-        <!-- Add data-label attributes for mobile -->
-        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)] max-[767px]:before:float-left max-[767px]:before:font-semibold max-[767px]:before:text-gray-700 max-[767px]:before:uppercase" data-label="Reference Number: ">
-          {{ item.id}}
-        </td>
-        
-        <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Weight: ">
+  <!-- Desktop headers -->
+  <thead class="text-xs text-gray-700 uppercase bg-gray-50 max-[767px]:hidden">
+    <tr>
+      <th class="px-6 py-3">Reference Number</th>
+      <th class="px-6 py-3">Weight</th>
+      <th class="px-6 py-3">Items Carried</th>
+      <th class="px-6 py-3">Shipping To</th>
+      <th class="px-6 py-3">Shipping From</th>
+      <th class="px-6 py-3">Status</th>
+      <th class="px-6 py-3">Finished Date</th>
+      <th class="px-6 py-3">Request Created</th>
+    </tr>
+  </thead>
+
+  <tbody class="max-[767px]:block">
+    <tr 
+      v-for="item in shippingFormDataFinished" 
+      :key="item.id" 
+      class="border-b max-[767px]:block max-[767px]:border-b-0 max-[767px]:mb-4 max-[767px]:border max-[767px]:rounded-lg"
+    >
+      <!-- Add data-label attributes for mobile -->
+      <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)] max-[767px]:before:float-left max-[767px]:before:font-semibold max-[767px]:before:text-gray-700 max-[767px]:before:uppercase" data-label="Reference Number: ">
+        {{ item.id}}
+      </td>
+
+
+      <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Weight: ">
           {{ item.weight }}
         </td>
 
@@ -340,21 +351,23 @@
         <td class="px-6 py-4 max-[767px]:block max-[767px]:text-left max-[767px]:before:content-[attr(data-label)]" data-label="Request Created: ">
           {{ item.formatted_date}}
         </td>
-      </tr>
-    </tbody>
-  </table>
+      
+      <!-- Rest of your table cells remain the same -->
+      ...
+    </tr>
+  </tbody>
+</table>
 
   <div v-for="item in filteredCancelledSRF" :key="item.id">
-  <p>{{ item.name }}</p>
-  <label>
-    <input
-      type="checkbox"
-      :checked="item.acknowledged"
-      @change="acknowledgeItem(item.id)"
+    <p>{{ item.name }}</p>
+    <label>
+      <input
+        type="checkbox"
+        :checked="item.acknowledged"
+        @change="acknowledgeItem(item.id)"
     />
     </label>
   </div>
 </div>
-  </div>
 
 </template>

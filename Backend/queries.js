@@ -171,7 +171,7 @@ const queries = {
                 ), 0)) AS available_space
             FROM "AnyLogistics".vehicles v 
             LEFT JOIN "AnyLogistics".shipping_form s
-                ON (v.id = s.vehicle_from_id OR v.id = s.vehicle_to_id) -- Fix: No status filter in ON clause
+                ON (v.id = s.vehicle_from_id OR v.id = s.vehicle_to_id) 
             WHERE v.city_id = $1
             GROUP BY v.id, v.max_capacity_kg
             HAVING (v.max_capacity_kg - COALESCE(SUM(
@@ -209,7 +209,7 @@ const queries = {
                 ), 0)) AS available_space
             FROM "AnyLogistics".vehicles v 
             LEFT JOIN "AnyLogistics".shipping_form s
-                ON (v.id = s.vehicle_from_id OR v.id = s.vehicle_to_id) -- Fix: No status filter in ON clause
+                ON (v.id = s.vehicle_from_id OR v.id = s.vehicle_to_id) 
             WHERE v.city_id = $1
             GROUP BY v.id, v.max_capacity_kg
             HAVING (v.max_capacity_kg - COALESCE(SUM(
@@ -255,12 +255,20 @@ const queries = {
             l_from.name AS from_location_name,
             l_from.address AS from_location_address,
             l_to.name AS to_location_name,
-            l_to.address AS to_location_address
+            l_to.address AS to_location_address,
+            u_from.last_name AS vehicle_from_last_name,
+            u_from.phone_number AS vehicle_from_phone_number,
+            u_to.last_name AS vehicle_to_last_name,
+            u_to.phone_number AS vehicle_to_phone_number
             FROM shipping_form s JOIN locations l_from
             on s.shipping_from = l_from.id
-            JOIN cities c_from on l_from.city_id = c_from.id
-            JOIN locations l_to ON s.shipping_to = l_to.id
-            JOIN cities c_to ON l_to.city_id = c_to.id
+            LEFT JOIN cities c_from on l_from.city_id = c_from.id
+            LEFT JOIN locations l_to ON s.shipping_to = l_to.id
+            LEFT JOIN cities c_to ON l_to.city_id = c_to.id
+            LEFT JOIN vehicles v_from ON s.vehicle_from_id = v_from.id
+            LEFT JOIN vehicles v_to ON s.vehicle_to_id = v_to.id
+            LEFT JOIN users u_from ON v_from.user_id = u_from.id   
+            LEFT JOIN users u_to ON v_to.user_id = u_to.id       
             WHERE s.client_id = $1;
         `,
         addShippingFormQ:`

@@ -64,6 +64,7 @@
         <div class="flex-grow flex flex-row justify-center items-center rounded-2xl">
             <div class="bg-white rounded-2xl flex flex-row shadow-[#454545] shadow-2xl">
                 <div>
+                    <div class="font-bold text-4xl ml-5 mt-5">LOGIN</div>
                     <form class="p-5 flex flex-col gap-5" @submit.prevent="handleLogin">
                         <label>Username</label>
                         <input type="text"  name="username" class=" border-black border-[1px]" v-model="username" > 

@@ -31,12 +31,7 @@
 
     -->
     <div class="py-8 px-4">
-        <div name="filters">
-            <button class="mx-2">All</button>
-            <button class="mx-2">Admins</button>
-            <button class="mx-2">Clients</button>
-            <button class="mx-2">Couriers</button>
-        </div>
+
 
         <table class="w-full text-sm text-left rtl:text-right table-auto">
             <thead class="bg-blue-300">
